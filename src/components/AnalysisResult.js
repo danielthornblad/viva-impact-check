@@ -174,8 +174,8 @@ const AnalysisResult = ({ analysisResult }) => {
                         Styrkor
                       </p>
                       <div style={{ paddingLeft: '8px' }}>
-                        {items.strengths.map((item, idx) => (
-                          <div key={idx} style={{
+                        {items.strengths.map((item) => (
+                          <div key={`${sectionName}-strength-${item}`} style={{
                             display: 'flex',
                             alignItems: 'flex-start',
                             gap: '12px',
@@ -218,8 +218,8 @@ const AnalysisResult = ({ analysisResult }) => {
                         Förbättringsområden
                       </p>
                       <div style={{ paddingLeft: '8px' }}>
-                        {items.weaknesses.map((item, idx) => (
-                          <div key={idx} style={{
+                        {items.weaknesses.map((item) => (
+                          <div key={`${sectionName}-weakness-${item}`} style={{
                             display: 'flex',
                             alignItems: 'flex-start',
                             gap: '12px',
@@ -264,8 +264,8 @@ const AnalysisResult = ({ analysisResult }) => {
                         Osäkerheter
                       </p>
                       <div style={{ paddingLeft: '8px' }}>
-                        {items.uncertainties.map((item, idx) => (
-                          <div key={idx} style={{
+                        {items.uncertainties.map((item) => (
+                          <div key={`${sectionName}-uncertainty-${item}`} style={{
                             display: 'flex',
                             alignItems: 'flex-start',
                             gap: '12px',
@@ -326,8 +326,8 @@ const AnalysisResult = ({ analysisResult }) => {
                   Övergripande styrkor
                 </h4>
                 <div>
-                  {analysisResult.analysisResult.overallStrengths.map((item, idx) => (
-                    <div key={idx} style={{
+                  {analysisResult.analysisResult.overallStrengths.map((item) => (
+                    <div key={item} style={{
                       display: 'flex',
                       alignItems: 'flex-start',
                       gap: '12px',
@@ -373,8 +373,8 @@ const AnalysisResult = ({ analysisResult }) => {
                   Förbättringsområden
                 </h4>
                 <div>
-                  {analysisResult.analysisResult.overallWeaknesses.map((item, idx) => (
-                    <div key={idx} style={{
+                  {analysisResult.analysisResult.overallWeaknesses.map((item) => (
+                    <div key={item} style={{
                       display: 'flex',
                       alignItems: 'flex-start',
                       gap: '12px',
@@ -455,7 +455,7 @@ const AnalysisResult = ({ analysisResult }) => {
             </h4>
             <div style={{ display: 'flex', flexDirection: 'column', gap: '16px' }}>
               {analysisResult.analysisResult.improvements.map((item, idx) => (
-                <div key={idx} style={{
+                <div key={item} style={{
                   backgroundColor: 'white',
                   borderRadius: '8px',
                   padding: '24px',
