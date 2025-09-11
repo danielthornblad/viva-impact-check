@@ -1,6 +1,44 @@
 import React, { useState } from 'react';
 
 const AdAnalyzerUI = () => {
+
+  React.useEffect(() => {
+    // Skapa en style-tagg för animationer
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes spin {
+        0% { transform: rotate(0deg); }
+        100% { transform: rotate(360deg); }
+      }
+      @keyframes pulse {
+        0%, 100% { opacity: 0.3; }
+        33% { opacity: 0.6; }
+        66% { opacity: 1; }
+      }
+      .rotating {
+        animation: spin 2s linear infinite;
+      }
+      .pulsing-1 {
+        animation: pulse 1.5s ease-in-out infinite;
+        animation-delay: 0s;
+      }
+      .pulsing-2 {
+        animation: pulse 1.5s ease-in-out infinite;
+        animation-delay: 0.3s;
+      }
+      .pulsing-3 {
+        animation: pulse 1.5s ease-in-out infinite;
+        animation-delay: 0.6s;
+      }
+    `;
+    document.head.appendChild(style);
+    
+    // Cleanup
+    return () => {
+      document.head.removeChild(style);
+    };
+  }, []);
+
   const [adType, setAdType] = useState('video');
   const [platform, setPlatform] = useState('');
   const [targetAudience, setTargetAudience] = useState('');
@@ -44,39 +82,41 @@ const AdAnalyzerUI = () => {
     setAnalyzing(true);
     setAnalysisResult(null);
     
-    console.log('Testar lokalt:', {
+    const formData = new FormData();
+    formData.append('file', uploadedFile);
+    formData.append('adType', adType);
+    formData.append('platform', platform);
+    formData.append('targetAudience', targetAudience);
+    formData.append('fileName', uploadedFile.name);
+    formData.append('fileSize', uploadedFile.size);
+    formData.append('fileType', uploadedFile.type);
+    formData.append('timestamp', Date.now().toString());
+    
+    console.log('Skickar till n8n:', {
       fileName: uploadedFile.name,
-      fileSize: uploadedFile.size,
-      fileType: uploadedFile.type,
-      adType,
-      platform,
-      targetAudience
+      adType, platform, targetAudience
     });
     
-    // Simulera server delay
-    await new Promise(resolve => setTimeout(resolve, 2000));
+    // Din riktiga n8n webhook URL
+    const response = await fetch('https://vivamedia.app.n8n.cloud/webhook-test/analyze-ad', {
+      method: 'POST',
+      body: formData,
+    });
     
-    // Simulera success response
-    const mockResult = {
-      success: true,
-      message: "Lokal test lyckades!",
-      data: {
-        fileName: uploadedFile.name,
-        fileSize: (uploadedFile.size / 1024 / 1024).toFixed(2) + ' MB',
-        adType,
-        platform,
-        targetAudience,
-        timestamp: new Date().toISOString()
-      }
-    };
+    if (!response.ok) {
+      throw new Error(`N8N failed: ${response.statusText}`);
+    }
     
-    setAnalysisResult(mockResult);
+    const result = await response.json();
+    setAnalysisResult(result);
     setAnalyzing(false);
+    
+    console.log('N8N response:', result);
     
   } catch (error) {
-    console.error('Test failed:', error);
+    console.error('N8N test failed:', error);
     setAnalyzing(false);
-    alert(`Test misslyckades: ${error.message}`);
+    alert(`N8N anslutning misslyckades: ${error.message}`);
   }
 };
 
@@ -116,50 +156,58 @@ const AdAnalyzerUI = () => {
       </div>
 
       {/* Hero Section */}
-      <div style={{ backgroundColor: '#CAE780' }}>
-        <div style={{ maxWidth: '896px', margin: '0 auto', padding: '64px 24px' }}>
-          <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '48px', alignItems: 'center' }}>
-            <div>
-              <div style={{ 
-                display: 'inline-block', 
-                backgroundColor: 'transparent', 
-                padding: '8px 16px', 
-                borderRadius: '50px', 
-                fontSize: '14px', 
-                fontWeight: '500', 
-                color: '#02443E', 
-                marginBottom: '24px', 
-                border: '1px solid #02443E' 
-              }}>
-                Marknadsföring & AI-analys
-              </div>
-              <h1 style={{ 
-                fontSize: '3.75rem', 
-                fontWeight: '700', 
-                color: '#02443E', 
-                lineHeight: '1.1', 
-                marginBottom: '24px',
-                fontFamily: 'DM Sans, sans-serif'
-              }}>
-                Viva Impact Check
-              </h1>
-            </div>
-            
-            <div>
-              <p style={{ 
-                fontSize: '18px', 
-                color: '#02443E', 
-                lineHeight: '1.6',
-                fontFamily: 'DM Sans, sans-serif'
-              }}>
-                Analysera effekten av dina annonser med AI-driven precision. 
-                Få djupgående insikter om målgruppsrelevans, budskap och 
-                optimeringsmöjligheter som driver konvertering och ROI.
-              </p>
-            </div>
-          </div>
+<div style={{ backgroundColor: '#CAE780' }}>
+  <div style={{ maxWidth: '896px', margin: '0 auto', padding: '64px 24px' }}>
+    <div style={{ 
+      display: 'grid', 
+      gridTemplateColumns: 'repeat(2, 1fr)', 
+      gap: '48px', 
+      alignItems: 'flex-start'
+    }}>
+      <div>
+        <div style={{ 
+          display: 'inline-block', 
+          backgroundColor: 'transparent', 
+          padding: '8px 16px', 
+          borderRadius: '50px', 
+          fontSize: '14px', 
+          fontWeight: '500', 
+          color: '#02443E', 
+          marginBottom: '24px', 
+          border: '1px solid #02443E' 
+        }}>
+          Marknadsföring & AI-analys
         </div>
+        <h1 style={{ 
+          fontSize: '3.75rem', 
+          fontWeight: '700', 
+          color: '#02443E', 
+          lineHeight: '1.1', 
+          margin: 0,  // Ta bort margin
+          fontFamily: 'DM Sans, sans-serif'
+        }}>
+          Viva Impact Check
+        </h1>
       </div>
+      
+      <div style={{ 
+        paddingTop: '72px'  // Justera detta värde för att matcha toppen av "Viva Impact Check"
+      }}>
+        <p style={{ 
+          fontSize: '18px', 
+          color: '#02443E', 
+          lineHeight: '1.6',
+          fontFamily: 'DM Sans, sans-serif',
+          margin: 0
+        }}>
+          Analysera effekten av dina annonser med AI-driven precision. 
+          Få djupgående insikter om målgruppsrelevans, budskap och 
+          optimeringsmöjligheter som driver konvertering och ROI.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>
 
       <div style={{ maxWidth: '896px', margin: '0 auto', padding: '48px 24px' }}>
         {/* Steg 1: Annonstyp */}
@@ -432,7 +480,8 @@ const AdAnalyzerUI = () => {
                   border: '1px solid #d1d5db',
                   borderRadius: '12px',
                   fontSize: '16px',
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'DM Sans, sans-serif',
+                  boxSizing: 'border-box'
                 }}
               >
                 <option value="">Välj plattform</option>
@@ -464,43 +513,201 @@ const AdAnalyzerUI = () => {
                   border: '1px solid #d1d5db',
                   borderRadius: '12px',
                   fontSize: '16px',
-                  fontFamily: 'DM Sans, sans-serif'
+                  fontFamily: 'DM Sans, sans-serif',
+                  boxSizing: 'border-box'
                 }}
               />
             </div>
           </div>
         </div>
 
-        {/* Analysera-knapp */}
-        <div style={{ textAlign: 'center', marginBottom: '32px' }}>
-          <button
-            disabled={!canAnalyze || analyzing}
-            onClick={startAnalysis}
-            style={{
-              padding: '16px 48px',
-              borderRadius: '50px',
-              fontWeight: '700',
-              fontSize: '18px',
-              border: 'none',
-              cursor: (canAnalyze && !analyzing) ? 'pointer' : 'not-allowed',
-              backgroundColor: (canAnalyze && !analyzing) ? '#CAE780' : '#e5e7eb',
-              color: (canAnalyze && !analyzing) ? '#1f2937' : '#9ca3af',
-              boxShadow: (canAnalyze && !analyzing) ? '0 10px 25px rgba(0, 0, 0, 0.1)' : 'none',
-              transition: 'all 0.2s',
-              fontFamily: 'DM Sans, sans-serif',
-              opacity: analyzing ? 0.7 : 1
-            }}
-          >
-            {analyzing 
-              ? 'Testar anslutning...' 
-              : canAnalyze 
-                ? 'Testa anslutning' 
-                : 'Fyll i alla fält för att fortsätta'
-            }
-          </button>
-        </div>
+{/* Analysera-knapp */}
+  <div style={{ textAlign: 'center', marginBottom: '32px' }}>
+  <button
+    disabled={!canAnalyze || analyzing}
+    onClick={startAnalysis}
+    style={{
+      padding: '16px 48px',
+      borderRadius: '50px',
+      fontWeight: '700',
+      fontSize: '18px',
+      border: 'none',
+      cursor: (canAnalyze && !analyzing) ? 'pointer' : 'not-allowed',
+      backgroundColor: (canAnalyze && !analyzing) ? '#CAE780' : '#e5e7eb',
+      color: (canAnalyze && !analyzing) ? '#1f2937' : '#9ca3af',
+      boxShadow: (canAnalyze && !analyzing) ? '0 10px 25px rgba(0, 0, 0, 0.1)' : 'none',
+      transition: 'all 0.2s',
+      fontFamily: 'DM Sans, sans-serif',
+      opacity: analyzing ? 0.7 : 1
+    }}
+  >
+    {analyzing 
+      ? 'Analyserar...' 
+      : canAnalyze 
+        ? 'Analysera annons' 
+        : 'Fyll i alla fält för att fortsätta'
+    }
+  </button>
+</div>
 
-       {/* Test resultat */}
+{/* Laddningsindikator - visas endast när analyzing är true */}
+{analyzing && (
+  <div style={{
+    position: 'fixed',
+    top: 0,
+    left: 0,
+    right: 0,
+    bottom: 0,
+    backgroundColor: '#ffffff',
+    display: 'flex',
+    alignItems: 'center',
+    justifyContent: 'center',
+    zIndex: 1000
+  }}>
+    <div style={{
+      maxWidth: '400px',
+      textAlign: 'center'
+    }}>
+      {/* Animerad ring med prickar */}
+      <div style={{
+        width: '60px',
+        height: '60px',
+        margin: '0 auto 32px',
+        position: 'relative'
+      }}>
+        <div style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          border: '6px solid #f3f4f6',
+          borderRadius: '50%'
+        }} />
+        <div 
+          className="rotating"
+          style={{
+          position: 'absolute',
+          width: '100%',
+          height: '100%',
+          border: '6px solid transparent',
+          borderTop: '6px solid #CAE780',
+          borderRadius: '50%'
+        }} />
+
+        {/* Tre prickar som "laddningsindikator" */}
+        {/*<div style={{
+          position: 'absolute',
+          top: '55%',
+          left: '55%',
+          transform: 'translate(-50%, -50%)',
+          display: 'flex',
+          gap: '8px'
+        }}>
+          <div className="pulsing-1" style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: '#CAE780'
+          }} />
+          <div className="pulsing-2" style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: '#CAE780'
+          }} />
+          <div className="pulsing-3" style={{
+            width: '8px',
+            height: '8px',
+            borderRadius: '50%',
+            backgroundColor: '#CAE780'
+          }} />
+        </div>*/}
+
+      </div>
+      
+      <h3 style={{
+        fontSize: '24px',
+        fontWeight: '600',
+        color: '#1f2937',
+        marginBottom: '12px',
+        fontFamily: 'DM Sans, sans-serif'
+      }}>
+        Analyserar din {adType === 'video' ? 'video' : 'bild'}
+      </h3>
+      
+      <p style={{
+        fontSize: '16px',
+        color: '#6b7280',
+        fontFamily: 'DM Sans, sans-serif',
+        marginBottom: '32px'
+      }}>
+        AI:n granskar innehållet och genererar insikter
+      </p>
+      
+      {/* Progress steps - enklare version */}
+      <div style={{ 
+        display: 'flex',
+        justifyContent: 'space-between',
+        maxWidth: '300px',
+        margin: '0 auto'
+      }}>
+        <div style={{ textAlign: 'center', flex: 1 }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: '#CAE780',
+            margin: '0 auto 8px',
+            display: 'flex',
+            alignItems: 'center',
+            justifyContent: 'center',
+            color: 'white',
+            fontSize: '20px'
+          }}>
+            ✓
+          </div>
+          <span style={{ fontSize: '12px', color: '#1f2937' }}>Uppladdad</span>
+        </div>
+        
+        <div style={{ textAlign: 'center', flex: 1 }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: '#CAE780',
+            margin: '0 auto 8px',
+            position: 'relative',
+            overflow: 'hidden'
+          }}>
+            <div style={{
+              position: 'absolute',
+              top: '50%',
+              left: '50%',
+              transform: 'translate(-50%, -50%)',
+              width: '10px',
+              height: '10px',
+              borderRadius: '50%',
+              backgroundColor: 'white'
+            }} />
+          </div>
+          <span style={{ fontSize: '12px', color: '#1f2937', fontWeight: '600' }}>Bearbetar</span>
+        </div>
+        
+        <div style={{ textAlign: 'center', flex: 1 }}>
+          <div style={{
+            width: '40px',
+            height: '40px',
+            borderRadius: '50%',
+            backgroundColor: '#e5e7eb',
+            margin: '0 auto 8px'
+          }} />
+          <span style={{ fontSize: '12px', color: '#9ca3af' }}>Rapport</span>
+        </div>
+      </div>
+    </div>
+  </div>
+)}
+
+
 {analysisResult && (
   <div style={{ 
     backgroundColor: 'white', 
@@ -516,13 +723,16 @@ const AdAnalyzerUI = () => {
       marginBottom: '16px',
       fontFamily: 'DM Sans, sans-serif'
     }}>
-      Test Resultat
+      AI Analysresultat
     </h2>
+    
+    {/* Metadata-sektion */}
     <div style={{
       backgroundColor: '#f0f9f0',
       padding: '20px',
       borderRadius: '8px',
-      fontFamily: 'DM Sans, sans-serif'
+      fontFamily: 'DM Sans, sans-serif',
+      marginBottom: '24px'
     }}>
       <p style={{ color: '#059669', fontWeight: '600', marginBottom: '12px' }}>
         ✅ {analysisResult.message}
@@ -537,36 +747,543 @@ const AdAnalyzerUI = () => {
       }}>
         <div style={{ display: 'grid', gridTemplateColumns: 'auto 1fr', gap: '8px 16px' }}>
           <strong>Filnamn:</strong>
-          <span>{analysisResult.data.fileName}</span>
+          <span>{analysisResult.fileName || analysisResult.data?.fileName}</span>
           
           <strong>Filstorlek:</strong>
-          <span>{analysisResult.data.fileSize}</span>
+          <span>{analysisResult.data?.fileSize ? `${(analysisResult.data.fileSize / 1024).toFixed(2)} KB` : 'N/A'}</span>
           
           <strong>Annonstyp:</strong>
-          <span>{analysisResult.data.adType === 'video' ? 'Videoannons' : 'Bildannons'}</span>
+          <span>{analysisResult.data?.adType === 'video' ? 'Videoannons' : 'Bildannons'}</span>
           
           <strong>Platform:</strong>
-          <span>{analysisResult.data.platform}</span>
+          <span>{analysisResult.data?.platform || analysisResult.platform}</span>
           
           <strong>Målgrupp:</strong>
-          <span>{analysisResult.data.targetAudience}</span>
+          <span>{analysisResult.data?.targetAudience || analysisResult.targetAudience}</span>
           
           <strong>Tidsstämpel:</strong>
-          <span>{new Date(analysisResult.data.timestamp).toLocaleString('sv-SE')}</span>
+          <span>{analysisResult.data?.timestamp ? new Date(parseInt(analysisResult.data.timestamp)).toLocaleString('sv-SE') : new Date().toLocaleString('sv-SE')}</span>
         </div>
       </div>
-      
-      <p style={{ 
-        color: '#374151', 
-        marginTop: '12px', 
-        fontSize: '13px',
-        fontStyle: 'italic' 
-      }}>
-        Detta är en lokal test. Nästa steg är att koppla till n8n webhook för riktig AI-analys.
-      </p>
     </div>
+    
+    {/* Strukturerad AI-analys */}
+    {analysisResult.analysisResult && analysisResult.analysisResult.parsed && (
+      <div style={{ fontFamily: 'DM Sans, sans-serif' }}>
+        
+        {/* Analystyp-badge */}
+        <div style={{ marginBottom: '24px' }}>
+          <span style={{
+            display: 'inline-block',
+            padding: '6px 16px',
+            borderRadius: '20px',
+            backgroundColor: analysisResult.analysisResult.type === 'video' ? '#3b82f6' : '#8b5cf6',
+            color: 'white',
+            fontSize: '14px',
+            fontWeight: '600',
+            textTransform: 'uppercase',
+            letterSpacing: '0.5px'
+          }}>
+            {analysisResult.analysisResult.type === 'video' ? '🎬 Videoanalys' : '🖼️ Bildanalys'}
+          </span>
+        </div>
+        
+        {/* Huvudsektioner */}
+        {analysisResult.analysisResult.sections && Object.keys(analysisResult.analysisResult.sections).length > 0 && (
+          <div style={{ marginBottom: '32px' }}>
+            <h3 style={{
+              fontSize: '1.5rem',
+              fontWeight: '600',
+              color: '#1f2937',
+              marginBottom: '20px',
+              borderBottom: '2px solid #e5e7eb',
+              paddingBottom: '8px'
+            }}>
+              Detaljerad analys
+            </h3>
+            
+            <div style={{
+              display: 'grid',
+              gridTemplateColumns: 'repeat(auto-fill, minmax(350px, 1fr))',
+              gap: '20px'
+            }}>
+              {Object.entries(analysisResult.analysisResult.sections).map(([sectionName, items]) => (
+                <div key={sectionName} style={{
+                  backgroundColor: '#f9fafb',
+                  borderRadius: '8px',
+                  padding: '20px',
+                  border: '1px solid #e5e7eb',
+                  transition: 'transform 0.2s, box-shadow 0.2s',
+                  cursor: 'default'
+                }}
+                onMouseEnter={(e) => {
+                  e.currentTarget.style.transform = 'translateY(-2px)';
+                  e.currentTarget.style.boxShadow = '0 4px 6px -1px rgba(0, 0, 0, 0.1)';
+                }}
+                onMouseLeave={(e) => {
+                  e.currentTarget.style.transform = 'translateY(0)';
+                  e.currentTarget.style.boxShadow = 'none';
+                }}>
+                  <h4 style={{
+                    fontSize: '1.125rem',
+                    fontWeight: '600',
+                    color: '#374151',
+                    marginBottom: '16px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    gap: '8px'
+                  }}>
+                    <span style={{
+                      width: '4px',
+                      height: '20px',
+                      backgroundColor: '#3b82f6',
+                      borderRadius: '2px'
+                    }}></span>
+                    {sectionName}
+                  </h4>
+                  
+                  {/* Styrkor */}
+                  {items.strengths && items.strengths.length > 0 && (
+                    <div style={{ marginBottom: '12px' }}>
+                      <p style={{
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: '#059669',
+                        marginBottom: '8px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        Styrkor
+                      </p>
+                      <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                        {items.strengths.map((item, idx) => (
+                          <li key={idx} style={{
+                            color: '#047857',
+                            fontSize: '14px',
+                            lineHeight: '1.6',
+                            marginBottom: '4px',
+                            listStyleType: 'none',
+                            position: 'relative',
+                            paddingLeft: '20px'
+                          }}>
+                            <span style={{
+                              position: 'absolute',
+                              left: 0,
+                              color: '#10b981'
+                            }}>✓</span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {/* Svagheter */}
+                  {items.weaknesses && items.weaknesses.length > 0 && (
+                    <div style={{ marginBottom: '12px' }}>
+                      <p style={{
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: '#dc2626',
+                        marginBottom: '8px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        Svagheter
+                      </p>
+                      <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                        {items.weaknesses.map((item, idx) => (
+                          <li key={idx} style={{
+                            color: '#b91c1c',
+                            fontSize: '14px',
+                            lineHeight: '1.6',
+                            marginBottom: '4px',
+                            listStyleType: 'none',
+                            position: 'relative',
+                            paddingLeft: '20px'
+                          }}>
+                            <span style={{
+                              position: 'absolute',
+                              left: 0,
+                              color: '#ef4444'
+                            }}>✗</span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                  
+                  {/* Osäkerheter (för bildanalys) */}
+                  {items.uncertainties && items.uncertainties.length > 0 && (
+                    <div>
+                      <p style={{
+                        fontSize: '13px',
+                        fontWeight: '600',
+                        color: '#d97706',
+                        marginBottom: '8px',
+                        textTransform: 'uppercase',
+                        letterSpacing: '0.5px'
+                      }}>
+                        Osäkerheter
+                      </p>
+                      <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                        {items.uncertainties.map((item, idx) => (
+                          <li key={idx} style={{
+                            color: '#d97706',
+                            fontSize: '14px',
+                            lineHeight: '1.6',
+                            marginBottom: '4px',
+                            listStyleType: 'none',
+                            position: 'relative',
+                            paddingLeft: '20px'
+                          }}>
+                            <span style={{
+                              position: 'absolute',
+                              left: 0,
+                              color: '#f59e0b'
+                            }}>?</span>
+                            {item}
+                          </li>
+                        ))}
+                      </ul>
+                    </div>
+                  )}
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Övergripande styrkor och svagheter (för videoanalys) */}
+        {analysisResult.analysisResult.type === 'video' && (
+          <div style={{
+            display: 'grid',
+            gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))',
+            gap: '20px',
+            marginBottom: '32px'
+          }}>
+            {/* Övergripande styrkor */}
+            {analysisResult.analysisResult.overallStrengths && analysisResult.analysisResult.overallStrengths.length > 0 && (
+              <div style={{
+                backgroundColor: '#f0fdf4',
+                borderRadius: '8px',
+                padding: '20px',
+                border: '1px solid #86efac'
+              }}>
+                <h4 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: '#059669',
+                  marginBottom: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>💪</span>
+                  Övergripande styrkor
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                  {analysisResult.analysisResult.overallStrengths.map((item, idx) => (
+                    <li key={idx} style={{
+                      color: '#047857',
+                      fontSize: '15px',
+                      lineHeight: '1.8',
+                      marginBottom: '8px'
+                    }}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+            
+            {/* Övergripande svagheter */}
+            {analysisResult.analysisResult.overallWeaknesses && analysisResult.analysisResult.overallWeaknesses.length > 0 && (
+              <div style={{
+                backgroundColor: '#fef2f2',
+                borderRadius: '8px',
+                padding: '20px',
+                border: '1px solid #fca5a5'
+              }}>
+                <h4 style={{
+                  fontSize: '1.25rem',
+                  fontWeight: '600',
+                  color: '#dc2626',
+                  marginBottom: '16px',
+                  display: 'flex',
+                  alignItems: 'center',
+                  gap: '8px'
+                }}>
+                  <span style={{ fontSize: '1.5rem' }}>⚠️</span>
+                  Övergripande svagheter
+                </h4>
+                <ul style={{ margin: 0, paddingLeft: '20px' }}>
+                  {analysisResult.analysisResult.overallWeaknesses.map((item, idx) => (
+                    <li key={idx} style={{
+                      color: '#b91c1c',
+                      fontSize: '15px',
+                      lineHeight: '1.8',
+                      marginBottom: '8px'
+                    }}>
+                      {item}
+                    </li>
+                  ))}
+                </ul>
+              </div>
+            )}
+          </div>
+        )}
+        
+        {/* Sammanfattning (för bildanalys) */}
+        {analysisResult.analysisResult.type === 'image' && analysisResult.analysisResult.summary && (
+          <div style={{
+            backgroundColor: '#f3f4f6',
+            borderRadius: '8px',
+            padding: '20px',
+            marginBottom: '24px',
+            borderLeft: '4px solid #8b5cf6'
+          }}>
+            <h4 style={{
+              fontSize: '1.25rem',
+              fontWeight: '600',
+              color: '#1f2937',
+              marginBottom: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '1.5rem' }}>📋</span>
+              Sammanfattning
+            </h4>
+            <p style={{
+              color: '#4b5563',
+              fontSize: '15px',
+              lineHeight: '1.8',
+              margin: 0
+            }}>
+              {analysisResult.analysisResult.summary}
+            </p>
+          </div>
+        )}
+        
+        {/* Förbättringsförslag */}
+        {analysisResult.analysisResult.improvements && analysisResult.analysisResult.improvements.length > 0 && (
+          <div style={{
+            backgroundColor: '#fffbeb',
+            borderRadius: '8px',
+            padding: '24px',
+            marginBottom: '24px',
+            border: '1px solid #fcd34d'
+          }}>
+            <h4 style={{
+              fontSize: '1.25rem',
+              fontWeight: '600',
+              color: '#92400e',
+              marginBottom: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '1.5rem' }}>💡</span>
+              Konkreta förbättringsförslag
+            </h4>
+            <div style={{ display: 'flex', flexDirection: 'column', gap: '12px' }}>
+              {analysisResult.analysisResult.improvements.map((item, idx) => (
+                <div key={idx} style={{
+                  backgroundColor: 'white',
+                  borderRadius: '6px',
+                  padding: '16px',
+                  border: '1px solid #fde047',
+                  display: 'flex',
+                  gap: '12px',
+                  alignItems: 'flex-start'
+                }}>
+                  <span style={{
+                    backgroundColor: '#fbbf24',
+                    color: 'white',
+                    borderRadius: '50%',
+                    width: '24px',
+                    height: '24px',
+                    display: 'flex',
+                    alignItems: 'center',
+                    justifyContent: 'center',
+                    fontWeight: '600',
+                    fontSize: '14px',
+                    flexShrink: 0
+                  }}>
+                    {idx + 1}
+                  </span>
+                  <p style={{
+                    margin: 0,
+                    color: '#78350f',
+                    fontSize: '15px',
+                    lineHeight: '1.6'
+                  }}>
+                    {item}
+                  </p>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
+        
+        {/* Motivering (för bildanalys) */}
+        {analysisResult.analysisResult.type === 'image' && analysisResult.analysisResult.motivation && (
+          <div style={{
+            backgroundColor: '#f0f9ff',
+            borderRadius: '8px',
+            padding: '20px',
+            marginBottom: '24px',
+            borderLeft: '4px solid #0ea5e9'
+          }}>
+            <h4 style={{
+              fontSize: '1.25rem',
+              fontWeight: '600',
+              color: '#075985',
+              marginBottom: '12px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '1.5rem' }}>📝</span>
+              Motivering
+            </h4>
+            <p style={{
+              color: '#0c4a6e',
+              fontSize: '15px',
+              lineHeight: '1.8',
+              margin: 0
+            }}>
+              {analysisResult.analysisResult.motivation}
+            </p>
+          </div>
+        )}
+        
+        {/* Rekommendation (för videoanalys) */}
+        {analysisResult.analysisResult.type === 'video' && analysisResult.analysisResult.recommendation && (
+          <div style={{
+            backgroundColor: '#f0f9ff',
+            borderRadius: '8px',
+            padding: '24px',
+            border: '2px solid #0ea5e9'
+          }}>
+            <h4 style={{
+              fontSize: '1.25rem',
+              fontWeight: '600',
+              color: '#075985',
+              marginBottom: '16px',
+              display: 'flex',
+              alignItems: 'center',
+              gap: '8px'
+            }}>
+              <span style={{ fontSize: '1.5rem' }}>🎯</span>
+              Samlad rekommendation
+            </h4>
+            <p style={{
+              color: '#0c4a6e',
+              fontSize: '15px',
+              lineHeight: '1.8',
+              margin: 0
+            }}>
+              {analysisResult.analysisResult.recommendation}
+            </p>
+          </div>
+        )}
+        
+      </div>
+    )}
+    
+    {/* Fallback för oparsad data */}
+    {analysisResult.analysisResult && !analysisResult.analysisResult.parsed && (
+      <div style={{
+        backgroundColor: '#fef2f2',
+        padding: '20px',
+        borderRadius: '8px',
+        marginTop: '20px',
+        border: '1px solid #fca5a5'
+      }}>
+        <h3 style={{ 
+          fontSize: '1.25rem', 
+          fontWeight: '600', 
+          color: '#dc2626', 
+          marginBottom: '12px',
+          fontFamily: 'DM Sans, sans-serif'
+        }}>
+          ⚠️ Fel vid parsning av analys
+        </h3>
+        {analysisResult.analysisResult.error && (
+          <p style={{ color: '#b91c1c', marginBottom: '12px' }}>
+            {analysisResult.analysisResult.error}
+          </p>
+        )}
+        {analysisResult.analysisResult.rawContent && (
+          <details>
+            <summary style={{ 
+              cursor: 'pointer', 
+              color: '#7f1d1d',
+              fontWeight: '600',
+              marginBottom: '8px'
+            }}>
+              Visa rå innehåll
+            </summary>
+            <div style={{ 
+              whiteSpace: 'pre-wrap',
+              lineHeight: '1.6',
+              color: '#991b1b',
+              fontFamily: 'monospace',
+              fontSize: '13px',
+              backgroundColor: 'white',
+              padding: '12px',
+              borderRadius: '4px',
+              marginTop: '8px'
+            }}>
+              {analysisResult.analysisResult.rawContent}
+            </div>
+          </details>
+        )}
+      </div>
+    )}
+    
+    {/* Väntar på analys */}
+    {!analysisResult.analysisResult && (
+      <div style={{
+        backgroundColor: '#fef3c7',
+        padding: '20px',
+        borderRadius: '8px',
+        marginTop: '20px',
+        border: '1px solid #fcd34d',
+        display: 'flex',
+        alignItems: 'center',
+        gap: '12px'
+      }}>
+        <div style={{
+          width: '24px',
+          height: '24px',
+          border: '3px solid #f59e0b',
+          borderTopColor: 'transparent',
+          borderRadius: '50%',
+          animation: 'spin 1s linear infinite'
+        }}></div>
+        <p style={{ 
+          color: '#92400e', 
+          margin: 0,
+          fontSize: '15px',
+          fontWeight: '500'
+        }}>
+          Väntar på AI-analys från n8n workflow...
+        </p>
+      </div>
+    )}
+    
+    {/* Lägg till CSS-animation för laddningsikonen */}
+    <style jsx>{`
+      @keyframes spin {
+        to { transform: rotate(360deg); }
+      }
+    `}</style>
   </div>
-)}
+)}     
 
         {/* Progress indicator */}
         <div style={{ display: 'flex', justifyContent: 'center' }}>
