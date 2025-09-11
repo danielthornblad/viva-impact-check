@@ -79,49 +79,55 @@ const AdAnalyzerUI = () => {
   };
 
   const startAnalysis = async () => {
-  if (!canAnalyze || !uploadedFile) return;
-  
-  try {
-    setAnalyzing(true);
-    setAnalysisResult(null);
-    
-    const formData = new FormData();
-    formData.append('file', uploadedFile);
-    formData.append('adType', adType);
-    formData.append('platform', platform);
-    formData.append('targetAudience', targetAudience);
-    formData.append('fileName', uploadedFile.name);
-    formData.append('fileSize', uploadedFile.size);
-    formData.append('fileType', uploadedFile.type);
-    formData.append('timestamp', Date.now().toString());
-    
-    console.log('Skickar till n8n:', {
-      fileName: uploadedFile.name,
-      adType, platform, targetAudience
-    });
-    
-    // Din riktiga n8n webhook URL
-    const response = await fetch(process.env.REACT_APP_N8N_WEBHOOK_URL, {
-      method: 'POST',
-      body: formData,
-    });
-    
-    if (!response.ok) {
-      throw new Error(`N8N failed: ${response.statusText}`);
+    if (!canAnalyze || !uploadedFile) return;
+
+    const webhookUrl = process.env.REACT_APP_N8N_WEBHOOK_URL;
+    if (!webhookUrl) {
+      alert('Miljövariabeln REACT_APP_N8N_WEBHOOK_URL saknas. Kan inte skicka analysförfrågan.');
+      return;
     }
-    
-    const result = await response.json();
-    setAnalysisResult(result);
-    setAnalyzing(false);
-    
-    console.log('N8N response:', result);
-    
-  } catch (error) {
-    console.error('N8N test failed:', error);
-    setAnalyzing(false);
-    alert(`N8N anslutning misslyckades: ${error.message}`);
-  }
-};
+
+    try {
+      setAnalyzing(true);
+      setAnalysisResult(null);
+
+      const formData = new FormData();
+      formData.append('file', uploadedFile);
+      formData.append('adType', adType);
+      formData.append('platform', platform);
+      formData.append('targetAudience', targetAudience);
+      formData.append('fileName', uploadedFile.name);
+      formData.append('fileSize', uploadedFile.size);
+      formData.append('fileType', uploadedFile.type);
+      formData.append('timestamp', Date.now().toString());
+
+      console.log('Skickar till n8n:', {
+        fileName: uploadedFile.name,
+        adType, platform, targetAudience
+      });
+
+      // Din riktiga n8n webhook URL
+      const response = await fetch(webhookUrl, {
+        method: 'POST',
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error(`N8N failed: ${response.statusText}`);
+      }
+
+      const result = await response.json();
+      setAnalysisResult(result);
+      setAnalyzing(false);
+
+      console.log('N8N response:', result);
+
+    } catch (error) {
+      console.error('N8N test failed:', error);
+      setAnalyzing(false);
+      alert(`N8N anslutning misslyckades: ${error.message}`);
+    }
+  };
 
   const platforms = [
     'Facebook/Meta',
