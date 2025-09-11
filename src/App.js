@@ -138,10 +138,12 @@ const AdAnalyzerUI = () => {
       formData.append('fileType', uploadedFile.type);
       formData.append('timestamp', Date.now().toString());
 
-      console.log('Skickar till n8n:', {
-        fileName: uploadedFile.name,
-        adType, platform, targetAudience
-      });
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('Skickar till n8n:', {
+          fileName: uploadedFile.name,
+          adType, platform, targetAudience
+        });
+      }
 
       // Din riktiga n8n webhook URL
       const response = await fetch(webhookUrl, {
@@ -157,7 +159,9 @@ const AdAnalyzerUI = () => {
       setAnalysisResult(result);
       setAnalyzing(false);
 
-      console.log('N8N response:', result);
+      if (process.env.NODE_ENV !== 'production') {
+        console.log('N8N response:', result);
+      }
 
     } catch (error) {
       console.error('N8N test failed:', error);
