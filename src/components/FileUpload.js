@@ -1,4 +1,5 @@
 import React from 'react';
+import { sectionStyle, headingStyle } from '../styles/commonStyles';
 
 const FileUpload = ({
   adType,
@@ -9,20 +10,9 @@ const FileUpload = ({
   handleFileSelect,
   onRemoveFile
 }) => (
-  <div style={{
-    backgroundColor: 'white',
-    borderRadius: '8px',
-    padding: '32px',
-    marginBottom: '24px'
-  }}>
+  <div style={sectionStyle}>
     <div style={{ marginBottom: '24px' }}>
-      <h2 style={{
-        fontSize: '2rem',
-        fontWeight: '700',
-        color: '#1f2937',
-        marginBottom: '8px',
-        fontFamily: 'DM Sans, sans-serif'
-      }}>
+      <h2 style={headingStyle}>
         Steg 2: Ladda upp din annons
       </h2>
       <p style={{
