@@ -60,21 +60,51 @@ const AdAnalyzerUI = () => {
     }
   };
 
+  const validateFile = (file) => {
+    const allowedTypes = {
+      video: ['video/mp4', 'video/quicktime', 'video/x-msvideo'],
+      image: ['image/jpeg', 'image/png', 'image/gif']
+    };
+
+    const maxSize = adType === 'video' ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
+
+    if (!allowedTypes[adType].includes(file.type)) {
+      alert(
+        adType === 'video'
+          ? 'Ogiltig videotyp. Tillåtna format: MP4, MOV, AVI.'
+          : 'Ogiltig bildtyp. Tillåtna format: JPG, PNG, GIF.'
+      );
+      return false;
+    }
+
+    if (file.size > maxSize) {
+      alert(
+        adType === 'video'
+          ? 'Videon får max vara 100MB.'
+          : 'Bilden får max vara 10MB.'
+      );
+      return false;
+    }
+
+    setUploadedFile(file);
+    return true;
+  };
+
   const handleDrop = (e) => {
     e.preventDefault();
     e.stopPropagation();
     setDragActive(false);
-    
+
     if (e.dataTransfer.files && e.dataTransfer.files[0]) {
       const file = e.dataTransfer.files[0];
-      setUploadedFile(file);
+      validateFile(file);
     }
   };
 
   const handleFileSelect = (e) => {
     if (e.target.files && e.target.files[0]) {
       const file = e.target.files[0];
-      setUploadedFile(file);
+      validateFile(file);
     }
   };
 
