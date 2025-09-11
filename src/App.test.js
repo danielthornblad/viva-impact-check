@@ -1,8 +1,8 @@
 import { render, screen } from '@testing-library/react';
 import App from './App';
 
-test('renders app title', () => {
+test('renders Viva Impact Check heading', () => {
   render(<App />);
-  const heading = screen.getByText(/Viva Impact Check/i);
+  const heading = screen.getByRole('heading', { name: /viva impact check/i });
   expect(heading).toBeInTheDocument();
 });
