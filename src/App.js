@@ -9,6 +9,7 @@ import AnalyzeButton from './components/AnalyzeButton';
 import LoadingOverlay from './components/LoadingOverlay';
 import ProgressIndicator from './components/ProgressIndicator';
 import Footer from './components/Footer';
+import ErrorBanner from './components/ErrorBanner';
 
 const AdAnalyzerUI = () => {
 
@@ -56,6 +57,7 @@ const AdAnalyzerUI = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleDrag = (e) => {
     e.preventDefault();
@@ -76,7 +78,7 @@ const AdAnalyzerUI = () => {
     const maxSize = adType === 'video' ? 100 * 1024 * 1024 : 10 * 1024 * 1024;
 
     if (!allowedTypes[adType].includes(file.type)) {
-      alert(
+      setErrorMessage(
         adType === 'video'
           ? 'Ogiltig videotyp. Tillåtna format: MP4, MOV, AVI.'
           : 'Ogiltig bildtyp. Tillåtna format: JPG, PNG, GIF.'
@@ -85,7 +87,7 @@ const AdAnalyzerUI = () => {
     }
 
     if (file.size > maxSize) {
-      alert(
+      setErrorMessage(
         adType === 'video'
           ? 'Videon får max vara 100MB.'
           : 'Bilden får max vara 10MB.'
@@ -93,6 +95,7 @@ const AdAnalyzerUI = () => {
       return false;
     }
 
+    setErrorMessage('');
     setUploadedFile(file);
     return true;
   };
@@ -120,13 +123,14 @@ const AdAnalyzerUI = () => {
 
     const webhookUrl = process.env.REACT_APP_N8N_WEBHOOK_URL;
     if (!webhookUrl) {
-      alert('Miljövariabeln REACT_APP_N8N_WEBHOOK_URL saknas. Kan inte skicka analysförfrågan.');
+      setErrorMessage('Miljövariabeln REACT_APP_N8N_WEBHOOK_URL saknas. Kan inte skicka analysförfrågan.');
       return;
     }
 
     try {
       setAnalyzing(true);
       setAnalysisResult(null);
+      setErrorMessage('');
 
       const formData = new FormData();
       formData.append('file', uploadedFile);
@@ -162,7 +166,7 @@ const AdAnalyzerUI = () => {
     } catch (error) {
       console.error('N8N test failed:', error);
       setAnalyzing(false);
-      alert(`N8N anslutning misslyckades: ${error.message}`);
+      setErrorMessage(`N8N anslutning misslyckades: ${error.message}`);
     }
   };
 
@@ -190,6 +194,7 @@ const AdAnalyzerUI = () => {
       <HeroSection />
 
       <div style={{ maxWidth: '896px', margin: '0 auto', padding: '48px 24px' }}>
+        <ErrorBanner message={errorMessage} />
         <AdTypeSelector adType={adType} setAdType={setAdType} />
 
 
@@ -203,6 +208,7 @@ const AdAnalyzerUI = () => {
           onRemoveFile={() => {
             setUploadedFile(null);
             setAnalysisResult(null);
+            setErrorMessage('');
           }}
         />
         

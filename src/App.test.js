@@ -12,7 +12,6 @@ test('shows error when REACT_APP_N8N_WEBHOOK_URL is missing', async () => {
   const originalEnv = process.env.REACT_APP_N8N_WEBHOOK_URL;
   delete process.env.REACT_APP_N8N_WEBHOOK_URL;
 
-  const alertMock = jest.spyOn(window, 'alert').mockImplementation(() => {});
   const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({});
 
   render(<App />);
@@ -30,12 +29,11 @@ test('shows error when REACT_APP_N8N_WEBHOOK_URL is missing', async () => {
   const analyzeButton = screen.getByRole('button', { name: /analysera annons/i });
   await userEvent.click(analyzeButton);
 
-  expect(alertMock).toHaveBeenCalledWith(
-    expect.stringContaining('REACT_APP_N8N_WEBHOOK_URL')
-  );
+  expect(
+    screen.getByText(/REACT_APP_N8N_WEBHOOK_URL saknas/i)
+  ).toBeInTheDocument();
   expect(fetchMock).not.toHaveBeenCalled();
 
-  alertMock.mockRestore();
   fetchMock.mockRestore();
   process.env.REACT_APP_N8N_WEBHOOK_URL = originalEnv;
 });
