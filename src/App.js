@@ -101,7 +101,7 @@ const AdAnalyzerUI = () => {
     });
     
     // Din riktiga n8n webhook URL
-    const response = await fetch('https://vivamedia.app.n8n.cloud/webhook-test/analyze-ad', {
+    const response = await fetch(process.env.REACT_APP_N8N_WEBHOOK_URL, {
       method: 'POST',
       body: formData,
     });
