@@ -29,7 +29,6 @@ const HeroSection = () => (
             color: '#02443E',
             lineHeight: '1.1',
             margin: 0,
-            fontFamily: 'DM Sans, sans-serif'
           }}>
             Viva Impact Check
           </h1>
@@ -40,7 +39,6 @@ const HeroSection = () => (
             fontSize: '18px',
             color: '#02443E',
             lineHeight: '1.6',
-            fontFamily: 'DM Sans, sans-serif',
             margin: 0
           }}>
             Analysera effekten av dina annonser med AI-driven precision. Få djupgående insikter om målgruppsrelevans, budskap och optimeringsmöjligheter som driver konvertering och ROI.

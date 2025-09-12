@@ -7,7 +7,6 @@ const ContextForm = ({ platform, setPlatform, targetAudience, setTargetAudience,
       <h2 style={headingStyle}>Steg 3: Kontext för analysen</h2>
       <p style={{
         color: '#6b7280',
-        fontFamily: 'DM Sans, sans-serif'
       }}>
         Berätta mer om din annons för bättre analys
       </p>
@@ -21,7 +20,6 @@ const ContextForm = ({ platform, setPlatform, targetAudience, setTargetAudience,
           fontWeight: '500',
           color: '#1f2937',
           marginBottom: '12px',
-          fontFamily: 'DM Sans, sans-serif'
         }}>
           Plattform
         </label>
@@ -34,7 +32,6 @@ const ContextForm = ({ platform, setPlatform, targetAudience, setTargetAudience,
             border: '1px solid #d1d5db',
             borderRadius: '12px',
             fontSize: '16px',
-            fontFamily: 'DM Sans, sans-serif',
             boxSizing: 'border-box'
           }}
         >
@@ -52,7 +49,6 @@ const ContextForm = ({ platform, setPlatform, targetAudience, setTargetAudience,
           fontWeight: '500',
           color: '#1f2937',
           marginBottom: '12px',
-          fontFamily: 'DM Sans, sans-serif'
         }}>
           Målgrupp
         </label>
@@ -67,7 +63,6 @@ const ContextForm = ({ platform, setPlatform, targetAudience, setTargetAudience,
             border: '1px solid #d1d5db',
             borderRadius: '12px',
             fontSize: '16px',
-            fontFamily: 'DM Sans, sans-serif',
             boxSizing: 'border-box'
           }}
         />

@@ -17,7 +17,6 @@ const FileUpload = ({
       </h2>
       <p style={{
         color: '#6b7280',
-        fontFamily: 'DM Sans, sans-serif'
       }}>
         {adType === 'video' ? 'Dra och släpp din videofil här' : 'Dra och släpp din bildfil här'}
       </p>
@@ -65,14 +64,12 @@ const FileUpload = ({
             fontSize: '18px',
             fontWeight: '500',
             color: '#1f2937',
-            fontFamily: 'DM Sans, sans-serif'
           }}>
             {uploadedFile.name}
           </p>
           <p style={{
             color: '#6b7280',
             marginTop: '4px',
-            fontFamily: 'DM Sans, sans-serif'
           }}>
             Fil vald ({(uploadedFile.size / 1024 / 1024).toFixed(2)} MB)
           </p>
@@ -86,7 +83,6 @@ const FileUpload = ({
               background: 'none',
               border: 'none',
               cursor: 'pointer',
-              fontFamily: 'DM Sans, sans-serif'
             }}
           >
             Ta bort fil
@@ -113,14 +109,12 @@ const FileUpload = ({
             fontWeight: '500',
             color: '#1f2937',
             marginBottom: '8px',
-            fontFamily: 'DM Sans, sans-serif'
           }}>
             Dra och släpp din {adType === 'video' ? 'video' : 'bild'} här
           </p>
           <p style={{
             color: '#6b7280',
             marginBottom: '16px',
-            fontFamily: 'DM Sans, sans-serif'
           }}>
             eller
           </p>
@@ -131,7 +125,6 @@ const FileUpload = ({
               padding: '12px 24px',
               borderRadius: '50px',
               fontWeight: '500',
-              fontFamily: 'DM Sans, sans-serif'
             }}>
               Välj fil
             </span>
@@ -140,7 +133,6 @@ const FileUpload = ({
             fontSize: '14px',
             color: '#6b7280',
             marginTop: '16px',
-            fontFamily: 'DM Sans, sans-serif'
           }}>
             {adType === 'video'
               ? 'Stöds: MP4, MOV, AVI (max 100MB)'

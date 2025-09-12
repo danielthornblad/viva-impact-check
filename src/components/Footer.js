@@ -24,7 +24,6 @@ const Footer = () => (
       <p style={{
         fontSize: '12px',
         color: '#9ca3af',
-        fontFamily: 'DM Sans, sans-serif',
         margin: 0,
         textAlign: 'center'
       }}>

@@ -12,7 +12,6 @@ const ErrorBanner = ({ message }) => {
         padding: '16px 24px',
         borderRadius: '8px',
         marginBottom: '24px',
-        fontFamily: 'DM Sans, sans-serif'
       }}
     >
       {message}
