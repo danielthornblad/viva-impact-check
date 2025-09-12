@@ -16,7 +16,6 @@ const AnalyzeButton = ({ canAnalyze, analyzing, startAnalysis }) => (
         color: (canAnalyze && !analyzing) ? '#1f2937' : '#9ca3af',
         boxShadow: (canAnalyze && !analyzing) ? '0 10px 25px rgba(0, 0, 0, 0.1)' : 'none',
         transition: 'all 0.2s',
-        fontFamily: 'DM Sans, sans-serif',
         opacity: analyzing ? 0.7 : 1
       }}
     >

@@ -188,7 +188,7 @@ const AdAnalyzerUI = () => {
   const canAnalyze = uploadedFile && platform && targetAudience;
 
   return (
-    <div style={{ fontFamily: 'DM Sans, sans-serif', minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
       
       {/* Header */}

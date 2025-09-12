@@ -44,8 +44,7 @@ const LoadingOverlay = ({ adType }) => (
         fontSize: '24px',
         fontWeight: '600',
         color: '#1f2937',
-        marginBottom: '12px',
-        fontFamily: 'DM Sans, sans-serif'
+        marginBottom: '12px'
       }}>
         Analyserar din {adType === 'video' ? 'video' : 'bild'}
       </h3>
@@ -53,7 +52,6 @@ const LoadingOverlay = ({ adType }) => (
       <p style={{
         fontSize: '16px',
         color: '#6b7280',
-        fontFamily: 'DM Sans, sans-serif',
         marginBottom: '32px'
       }}>
         AI:n granskar innehållet och genererar insikter

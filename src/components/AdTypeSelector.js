@@ -7,7 +7,6 @@ const AdTypeSelector = ({ adType, setAdType }) => (
       <h2 style={headingStyle}>Steg 1: Välj annonstyp</h2>
       <p style={{
         color: '#6b7280',
-        fontFamily: 'DM Sans, sans-serif'
       }}>
         Vilken typ av annons vill du analysera?
       </p>
@@ -31,7 +30,6 @@ const AdTypeSelector = ({ adType, setAdType }) => (
           transition: 'all 0.2s',
           backgroundColor: adType === 'video' ? '#CAE780' : 'transparent',
           color: adType === 'video' ? '#1f2937' : '#6b7280',
-          fontFamily: 'DM Sans, sans-serif'
         }}
       >
         Videoannons
@@ -47,7 +45,6 @@ const AdTypeSelector = ({ adType, setAdType }) => (
           transition: 'all 0.2s',
           backgroundColor: adType === 'image' ? '#CAE780' : 'transparent',
           color: adType === 'image' ? '#1f2937' : '#6b7280',
-          fontFamily: 'DM Sans, sans-serif'
         }}
       >
         Bildannons
