@@ -32,6 +32,11 @@ const MetadataSection = ({ analysisResult }) => {
           <strong className={styles.label}>Målgrupp:</strong>
           <span className={styles.value}>{analysisResult.data?.targetAudience || analysisResult.targetAudience}</span>
 
+          <strong className={styles.label}>AI-modell:</strong>
+          <span className={styles.value}>
+            {analysisResult.data?.aiProvider ?? analysisResult.aiProvider ?? 'N/A'}
+          </span>
+
           <strong className={styles.label}>Tidsstämpel:</strong>
           <span className={styles.value}>{analysisResult.data?.timestamp ? new Date(parseInt(analysisResult.data.timestamp)).toLocaleString('sv-SE') : new Date().toLocaleString('sv-SE')}</span>
         </div>
