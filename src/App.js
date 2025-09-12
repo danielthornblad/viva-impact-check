@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import Header from './components/Header';
 import FileUpload from './components/FileUpload';
 import AnalysisResult from './components/AnalysisResult';
@@ -13,7 +13,7 @@ import ErrorBanner from './components/ErrorBanner';
 
 const AdAnalyzerUI = () => {
 
-  React.useEffect(() => {
+  useEffect(() => {
     // Skapa en style-tagg för animationer
     const style = document.createElement('style');
     style.textContent = `
@@ -57,6 +57,13 @@ const AdAnalyzerUI = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
+
+  useEffect(() => {
+    if (analysisResult) {
+      window.scrollTo({ top: 0, behavior: 'smooth' });
+    }
+  }, [analysisResult]);
+
   const [errorMessage, setErrorMessage] = useState('');
 
   const handleDrag = (e) => {
