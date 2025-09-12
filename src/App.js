@@ -242,7 +242,9 @@ const AdAnalyzerUI = () => {
           </div>
         </>
       ) : (
-        <AnalysisResult analysisResult={analysisResult} />
+        <div style={{ maxWidth: '896px', margin: '0 auto', padding: '48px 24px' }}>
+          <AnalysisResult analysisResult={analysisResult} />
+        </div>
       )}
 
       <Footer />
