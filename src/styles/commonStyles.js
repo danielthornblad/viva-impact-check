@@ -16,6 +16,23 @@ export const analysisTitle = {
   lineHeight: '1.2'
 };
 
+export const sectionStyle = {
+  backgroundColor: 'white',
+  borderRadius: '12px',
+  padding: '48px',
+  marginBottom: '48px',
+  border: '1px solid #f0f0f0',
+  boxShadow: '0 2px 8px rgba(0, 0, 0, 0.04)'
+};
+
+export const headingStyle = {
+  margin: '0 0 8px 0',
+  fontSize: '1.5rem',
+  fontWeight: '600',
+  color: '#071119',
+  letterSpacing: '-0.01em'
+};
+
 export const badgeStyle = {
   display: 'inline-block',
   padding: '12px 24px',
