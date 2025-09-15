@@ -10,6 +10,7 @@ import LoadingOverlay from './components/LoadingOverlay';
 import ProgressIndicator from './components/ProgressIndicator';
 import Footer from './components/Footer';
 import ErrorBanner from './components/ErrorBanner';
+import Login from './components/Login';
 
 const AdAnalyzerUI = () => {
 
@@ -157,8 +158,10 @@ const AdAnalyzerUI = () => {
       }
 
       // Din riktiga n8n webhook URL
+      const token = localStorage.getItem('token');
       const response = await fetch(webhookUrl, {
         method: 'POST',
+        headers: { Authorization: `Bearer ${token}` },
         body: formData,
       });
 
@@ -261,6 +264,7 @@ const AdAnalyzerUI = () => {
   );
 };
 function App() {
-return <AdAnalyzerUI />;
+  const [isAuthenticated, setIsAuthenticated] = useState(() => !!localStorage.getItem('token'));
+  return isAuthenticated ? <AdAnalyzerUI /> : <Login onLogin={() => setIsAuthenticated(true)} />;
 }
 export default App;
