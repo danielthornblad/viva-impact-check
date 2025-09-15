@@ -2,6 +2,14 @@ import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 
+beforeEach(() => {
+  window.localStorage.setItem('token', 'test');
+});
+
+afterEach(() => {
+  window.localStorage.clear();
+});
+
 test('renders Viva Impact Check heading', () => {
   render(<App />);
   const heading = screen.getByRole('heading', { name: /viva impact check/i });
