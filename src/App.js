@@ -195,64 +195,66 @@ const AdAnalyzerUI = () => {
   const canAnalyze = uploadedFile && platform && targetAudience;
 
   return (
-    <div style={{ minHeight: '100vh', backgroundColor: '#f9fafb' }}>
+    <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f9fafb' }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
       {/* Header */}
       <Header />
 
-      {analysisResult === null ? (
-        <>
-          {/* Hero Section */}
-          <HeroSection />
+      <main style={{ flexGrow: 1 }}>
+        {analysisResult === null ? (
+          <>
+            {/* Hero Section */}
+            <HeroSection />
 
+            <div style={{ maxWidth: '896px', margin: '0 auto', padding: '48px 24px' }}>
+              <ErrorBanner message={errorMessage} />
+              <AdTypeSelector adType={adType} setAdType={setAdType} />
+
+              <FileUpload
+                adType={adType}
+                dragActive={dragActive}
+                uploadedFile={uploadedFile}
+                handleDrag={handleDrag}
+                handleDrop={handleDrop}
+                handleFileSelect={handleFileSelect}
+                onRemoveFile={() => {
+                  setUploadedFile(null);
+                  setAnalysisResult(null);
+                  setErrorMessage('');
+                }}
+              />
+
+              <ContextForm
+                platform={platform}
+                setPlatform={setPlatform}
+                targetAudience={targetAudience}
+                setTargetAudience={setTargetAudience}
+                platforms={platforms}
+              />
+
+              <AnalyzeButton
+                canAnalyze={canAnalyze}
+                analyzing={analyzing}
+                startAnalysis={startAnalysis}
+              />
+
+              {/* Laddningsindikator - visas endast när analyzing är true */}
+              {analyzing && <LoadingOverlay adType={adType} />}
+
+              <ProgressIndicator
+                adType={adType}
+                uploadedFile={uploadedFile}
+                platform={platform}
+                targetAudience={targetAudience}
+              />
+            </div>
+          </>
+        ) : (
           <div style={{ maxWidth: '896px', margin: '0 auto', padding: '48px 24px' }}>
-            <ErrorBanner message={errorMessage} />
-            <AdTypeSelector adType={adType} setAdType={setAdType} />
-
-            <FileUpload
-              adType={adType}
-              dragActive={dragActive}
-              uploadedFile={uploadedFile}
-              handleDrag={handleDrag}
-              handleDrop={handleDrop}
-              handleFileSelect={handleFileSelect}
-              onRemoveFile={() => {
-                setUploadedFile(null);
-                setAnalysisResult(null);
-                setErrorMessage('');
-              }}
-            />
-
-            <ContextForm
-              platform={platform}
-              setPlatform={setPlatform}
-              targetAudience={targetAudience}
-              setTargetAudience={setTargetAudience}
-              platforms={platforms}
-            />
-
-            <AnalyzeButton
-              canAnalyze={canAnalyze}
-              analyzing={analyzing}
-              startAnalysis={startAnalysis}
-            />
-
-            {/* Laddningsindikator - visas endast när analyzing är true */}
-            {analyzing && <LoadingOverlay adType={adType} />}
-
-            <ProgressIndicator
-              adType={adType}
-              uploadedFile={uploadedFile}
-              platform={platform}
-              targetAudience={targetAudience}
-            />
+            <AnalysisResult analysisResult={analysisResult} />
           </div>
-        </>
-      ) : (
-        <div style={{ maxWidth: '896px', margin: '0 auto', padding: '48px 24px' }}>
-          <AnalysisResult analysisResult={analysisResult} />
-        </div>
-      )}
+        )}
+      </main>
 
       <Footer />
     </div>
