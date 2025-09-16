@@ -10,8 +10,11 @@ import LoadingOverlay from './components/LoadingOverlay';
 import ProgressIndicator from './components/ProgressIndicator';
 import Footer from './components/Footer';
 import ErrorBanner from './components/ErrorBanner';
+import LoginView from './components/LoginView';
+import AdminPanel from './components/AdminPanel';
+import { AuthProvider, useAuth } from './auth/AuthContext';
 
-const AdAnalyzerUI = () => {
+const AdAnalyzerUI = ({ user, onOpenAdmin, onLogout }) => {
 
   useEffect(() => {
     // Skapa en style-tagg för animationer
@@ -198,7 +201,12 @@ const AdAnalyzerUI = () => {
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f9fafb' }}>
       <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
       {/* Header */}
-      <Header />
+      <Header
+        userEmail={user?.email}
+        canManage={user?.role === 'admin'}
+        onOpenAdmin={user?.role === 'admin' ? onOpenAdmin : undefined}
+        onLogout={onLogout}
+      />
 
       <main style={{ flexGrow: 1 }}>
         {analysisResult === null ? (
@@ -260,7 +268,49 @@ const AdAnalyzerUI = () => {
     </div>
   );
 };
+
+const AppContent = () => {
+  const { user, isInitialising, logout } = useAuth();
+  const [showAdmin, setShowAdmin] = useState(false);
+
+  useEffect(() => {
+    if (user?.role !== 'admin') {
+      setShowAdmin(false);
+    }
+  }, [user]);
+
+  if (isInitialising) {
+    return (
+      <div className="auth-loading">
+        <div className="auth-spinner" aria-hidden="true" />
+        <p>Verifierar session...</p>
+      </div>
+    );
+  }
+
+  if (!user) {
+    return <LoginView />;
+  }
+
+  if (showAdmin && user.role === 'admin') {
+    return <AdminPanel onClose={() => setShowAdmin(false)} />;
+  }
+
+  return (
+    <AdAnalyzerUI
+      user={user}
+      onOpenAdmin={() => setShowAdmin(true)}
+      onLogout={logout}
+    />
+  );
+};
+
 function App() {
-return <AdAnalyzerUI />;
+  return (
+    <AuthProvider>
+      <AppContent />
+    </AuthProvider>
+  );
 }
+
 export default App;

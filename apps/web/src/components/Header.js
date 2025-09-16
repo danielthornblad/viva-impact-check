@@ -6,11 +6,12 @@ const containerStyle = {
 };
 
 const innerStyle = {
-  maxWidth: '896px',
+  maxWidth: '1100px',
   margin: '0 auto',
   padding: '20px 24px',
   display: 'flex',
   alignItems: 'center',
+  gap: '16px',
   minHeight: '72px'
 };
 
@@ -20,7 +21,40 @@ const logoStyle = {
   fill: '#1f2937'
 };
 
-const Header = () => (
+const actionsStyle = {
+  marginLeft: 'auto',
+  display: 'flex',
+  alignItems: 'center',
+  gap: '12px'
+};
+
+const userStyle = {
+  fontSize: '0.9rem',
+  color: '#475569'
+};
+
+const adminButtonStyle = {
+  background: 'linear-gradient(135deg, #1c7ed6, #4dabf7)',
+  color: '#ffffff',
+  border: 'none',
+  borderRadius: '999px',
+  padding: '10px 18px',
+  fontWeight: 600,
+  cursor: 'pointer',
+  boxShadow: '0 10px 20px rgba(28, 126, 214, 0.25)'
+};
+
+const logoutButtonStyle = {
+  background: 'rgba(71, 85, 105, 0.12)',
+  color: '#1e293b',
+  border: 'none',
+  borderRadius: '999px',
+  padding: '10px 18px',
+  fontWeight: 600,
+  cursor: 'pointer'
+};
+
+const Header = ({ userEmail, canManage, onOpenAdmin, onLogout }) => (
   <header style={containerStyle}>
     <div style={innerStyle}>
       <svg
@@ -35,6 +69,19 @@ const Header = () => (
         <path d="M1808.4,673.38l.22.47L1494.68,11.35c-3.28-6.93-10.27-11.35-17.94-11.35h-146.51c-14.56,0-24.15,15.22-17.93,28.39l313.97,662.47c3.31,6.95,10.26,11.38,17.93,11.38h146.43c14.59,0,24.22-15.18,18-28.38l-.23-.48h0Z"/>
         <path d="M2603.96,603.72l-111.36-70.47c-3.18-1.99-5.69-4.9-7.28-8.27L2241.91,11.35c-3.28-6.93-10.27-11.35-17.94-11.35h-170.8c-7.67,0-14.65,4.42-17.94,11.35l-249.7,526.96c-6.24,13.17,3.36,28.35,17.94,28.35h146.43c7.67,0,14.65-4.42,17.94-11.35l158.6-334.73c4.78-10.09,19.14-10.09,23.92,0l98.15,207.13h-90.18c-10.96,0-19.85,8.89-19.85,19.85v99.25c0,10.96,8.89,19.85,19.85,19.85h156.29l58.89,124.2c3.31,6.95,10.32,11.38,18,11.38h201.88c10.98,0,19.85-8.93,19.85-19.85v-61.87c0-6.82-3.51-13.17-9.26-16.81h-.02,0ZM2138.4,195.33h0l.05.05-.05-.05h0Z"/>
       </svg>
+      <div style={actionsStyle}>
+        {userEmail && <span style={userStyle}>Inloggad som {userEmail}</span>}
+        {canManage && (
+          <button type="button" style={adminButtonStyle} onClick={onOpenAdmin}>
+            Adminpanel
+          </button>
+        )}
+        {onLogout && (
+          <button type="button" style={logoutButtonStyle} onClick={onLogout}>
+            Logga ut
+          </button>
+        )}
+      </div>
     </div>
   </header>
 );
