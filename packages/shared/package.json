@@ -1,0 +1,7 @@
+{
+  "name": "@viva/shared",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.js",
+  "description": "Shared domain logic and utilities for Viva Impact applications."
+}

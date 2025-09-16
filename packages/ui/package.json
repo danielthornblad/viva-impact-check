@@ -1,0 +1,7 @@
+{
+  "name": "@viva/ui",
+  "version": "0.1.0",
+  "private": true,
+  "main": "src/index.js",
+  "description": "Reusable UI helpers and components shared across Viva Impact apps."
+}

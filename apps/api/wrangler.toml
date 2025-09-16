@@ -1,0 +1,6 @@
+name = "viva-impact-api"
+compatibility_date = "2024-12-01"
+
+# Add bindings and routes once the Workers code is ready.
+# For Pages Functions deployments, this file will be sourced by GitHub Actions
+# or other CI via the scripts defined in package.json.
