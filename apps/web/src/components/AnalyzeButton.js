@@ -1,8 +1,6 @@
 import React from 'react';
-import { getPrimaryCtaLabel } from '@viva/ui';
-
 const AnalyzeButton = ({ canAnalyze, analyzing, startAnalysis }) => {
-  const ctaLabel = getPrimaryCtaLabel('analysera');
+  const ctaLabel = 'Analysera annons';
 
   return (
     <div style={{ textAlign: 'center', marginBottom: '32px' }}>
