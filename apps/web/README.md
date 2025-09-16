@@ -1,0 +1,47 @@
+# Viva Impact Frontend
+
+This React application analyzes ads using an n8n workflow. The project now lives
+inside the monorepo under `apps/web` and is managed through npm workspaces from
+the repository root.
+
+## Environment Variables
+
+The application expects a webhook URL available in the environment under the
+`REACT_APP_N8N_WEBHOOK_URL` variable.
+
+### Local development
+
+Create a `.env` file next to this README (`apps/web/.env`):
+
+```
+REACT_APP_N8N_WEBHOOK_URL=<url>
+```
+
+Replace `<url>` with the webhook endpoint to be used. After setting the value,
+start the development server from the repo root:
+
+```
+npm run start:web
+```
+
+### Production build
+
+When building or running the application in production, supply the variable in
+the environment:
+
+```
+REACT_APP_N8N_WEBHOOK_URL=<url> npm run build:web
+```
+
+Hosting services usually provide a way to define environment variables for
+runtime. Cloud builds can also call the workspace script with
+`npm run build --workspace @viva/web` if more convenient.
+
+### Continuous integration / other environments
+
+Set `REACT_APP_N8N_WEBHOOK_URL` in the relevant environment configuration (for
+example as a secret or CI variable) before running the build or tests:
+
+```
+npm run test:web
+```

@@ -1,37 +1,61 @@
-# Viva Impact Frontend
+# Viva Impact Monorepo
 
-This React application analyzes ads using an n8n workflow.
+The project is now organised as a multi-package workspace to host the web
+frontend, upcoming API workers and shared libraries in one place.
 
-## Environment Variables
+## Directory layout
 
-The application expects a webhook URL available in the environment under the
-`REACT_APP_N8N_WEBHOOK_URL` variable.
+- `apps/web` – React frontend served to end users.
+- `apps/api` – Placeholder for the Cloudflare Workers/Pages Functions backend.
+- `packages/shared` – Domain-level utilities consumable by any app.
+- `packages/ui` – Reusable UI helpers and future component library.
+- `packages/configs` – Centralised lint/test/vite configuration exports.
+- `db/migrations` – Versioned database schema changes.
+- `db/seed` – Seed scripts to populate non-production databases.
+- `infra` – Infrastructure-as-code definitions and deployment hooks.
+- `scripts` – Automation scripts executed locally or in CI/CD.
+- `docs` – High-level documentation and architecture notes.
+- `.github/workflows` – GitHub Actions automation for CI/CD.
 
-### Local development
+## Getting started
 
-Create a `.env` file in the project root:
+Install dependencies for every workspace:
 
-```
-REACT_APP_N8N_WEBHOOK_URL=<url>
-```
-
-Replace `<url>` with the webhook endpoint to be used. After setting the value,
-start the development server with `npm start`.
-
-### Production build
-
-When building or running the application in production, supply the variable in
-the environment:
-
-```
-REACT_APP_N8N_WEBHOOK_URL=<url> npm run build
+```sh
+npm install
 ```
 
-Hosting services usually provide a way to define environment variables for
-runtime.
+Run the frontend locally:
 
-### Continuous integration / other environments
+```sh
+npm run start:web
+```
 
-Set `REACT_APP_N8N_WEBHOOK_URL` in the relevant environment configuration (for
-example as a secret or CI variable) before running the build or tests.
+Build the production bundle:
 
+```sh
+npm run build:web
+```
+
+Run the frontend tests once (CI-style):
+
+```sh
+npm run test:web
+```
+
+Each workspace can also be targeted directly with `npm run <script> --workspace <name>`.
+
+## Adding backend functionality
+
+1. Place Worker or Pages Function files inside `apps/api` and wire them up via
+   `wrangler.toml`.
+2. Use the placeholder npm scripts (`dev`, `deploy:preview`, `deploy:production`)
+   as the foundation for automated deployments triggered from
+   `.github/workflows/`.
+3. Store shared models or logic in `packages/shared` so the frontend and backend
+   stay in sync.
+4. Version database migrations under `db/migrations` and reference them from
+   CI/CD scripts inside `scripts/`.
+
+Refer to the READMEs in each directory for more detailed expectations as the
+project grows.
