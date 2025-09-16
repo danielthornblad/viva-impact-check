@@ -1,9 +1,6 @@
 import React from 'react';
-import { getViteConfigName } from '@viva/configs';
 
 const Footer = () => {
-  const sharedConfig = getViteConfigName();
-
   return (
     <div style={{ backgroundColor: '#071119', color: 'white', padding: '48px 24px' }}>
       <div style={{ maxWidth: '896px', margin: '0 auto', textAlign: 'center' }}>
@@ -32,13 +29,6 @@ const Footer = () => {
           textAlign: 'center'
         }}>
           © 2025 Viva Media. Alla rättigheter förbehållna.
-        </p>
-        <p style={{
-          fontSize: '11px',
-          color: '#6b7280',
-          marginTop: '8px'
-        }}>
-          Monorepo shared config hint: {sharedConfig}
         </p>
       </div>
     </div>
