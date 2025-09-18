@@ -6,7 +6,8 @@ frontend, upcoming API workers and shared libraries in one place.
 ## Directory layout
 
 - `apps/web` – React frontend served to end users.
-- `apps/api` – Placeholder for the Cloudflare Workers/Pages Functions backend.
+- `functions` – Cloudflare Pages Functions som driver backend-API:t.
+- `apps/api` – Wrangler-konfiguration och dokumentation för backend-funktionerna.
 - `packages/shared` – Domain-level utilities consumable by any app.
 - `packages/ui` – Reusable UI helpers and future component library.
 - `packages/configs` – Centralised lint/test/vite configuration exports.
@@ -47,11 +48,11 @@ Each workspace can also be targeted directly with `npm run <script> --workspace 
 
 ## Adding backend functionality
 
-1. Place Worker or Pages Function files inside `apps/api` and wire them up via
-   `wrangler.toml`.
-2. Use the placeholder npm scripts (`dev`, `deploy:preview`, `deploy:production`)
-   as the foundation for automated deployments triggered from
-   `.github/workflows/`.
+1. Place Worker or Pages Function files inside the repo-root `functions/`
+   directory and wire them up via `apps/api/wrangler.toml`.
+2. Use the npm scripts in `apps/api` (`dev`, `deploy:preview`,
+   `deploy:production`) as the foundation for automated deployments triggered
+   from `.github/workflows/`.
 3. Store shared models or logic in `packages/shared` so the frontend and backend
    stay in sync.
 4. Version database migrations under `db/migrations` and reference them from
