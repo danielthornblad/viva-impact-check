@@ -1,4 +1,4 @@
-import { errorResponse } from './response';
+import { errorResponse } from './response.js';
 
 const TURNSTILE_ENDPOINT = 'https://challenges.cloudflare.com/turnstile/v0/siteverify';
 

@@ -1,12 +1,12 @@
-import { errorResponse } from '../../_lib/response';
-import { requireTurnstile } from '../../_lib/turnstile';
-import { isValidEmail, sanitizeEmail } from '../../_lib/validation';
-import { verifyPassword } from '../../_lib/passwords';
+import { errorResponse } from '../../_lib/response.js';
+import { requireTurnstile } from '../../_lib/turnstile.js';
+import { isValidEmail, sanitizeEmail } from '../../_lib/validation.js';
+import { verifyPassword } from '../../_lib/passwords.js';
 import {
   createSession,
   buildSessionCookie,
   respondWithSession,
-} from '../../_lib/session';
+} from '../../_lib/session.js';
 
 const MAX_FAILED_ATTEMPTS = 5;
 const LOCK_MINUTES = 15;
@@ -40,12 +40,24 @@ const handleFailedLogin = async (env, user) => {
     ).bind(attempts, lockedUntil, user.id)
   );
   await env.DB.batch(updates);
+  user.failedAttempts = attempts;
+  user.lockedUntil = lockedUntil;
 };
 
-const resetFailedLogins = async (env, userId) => {
+const clearLoginLock = async (env, user) => {
+  await env.DB.prepare(
+    'UPDATE users SET failed_login_attempts = 0, locked_until = NULL WHERE id = ?'
+  ).bind(user.id).run();
+  user.failedAttempts = 0;
+  user.lockedUntil = null;
+};
+
+const resetFailedLogins = async (env, user) => {
   await env.DB.prepare(
     'UPDATE users SET failed_login_attempts = 0, locked_until = NULL, last_login_at = datetime(\'now\') WHERE id = ?'
-  ).bind(userId).run();
+  ).bind(user.id).run();
+  user.failedAttempts = 0;
+  user.lockedUntil = null;
 };
 
 const respondUnauthorized = () => errorResponse(401, 'Felaktiga inloggningsuppgifter.');
@@ -90,8 +102,12 @@ export const onRequestPost = async ({ request, env }) => {
 
   if (user.lockedUntil) {
     const lockedUntilDate = new Date(user.lockedUntil);
-    if (lockedUntilDate > new Date()) {
+    const now = new Date();
+    if (lockedUntilDate > now) {
       return errorResponse(423, 'Kontot är tillfälligt låst efter för många misslyckade försök. Försök igen senare.');
+    }
+    if (!Number.isNaN(lockedUntilDate.getTime())) {
+      await clearLoginLock(env, user);
     }
   }
 
@@ -101,7 +117,7 @@ export const onRequestPost = async ({ request, env }) => {
     return respondUnauthorized();
   }
 
-  await resetFailedLogins(env, user.id);
+  await resetFailedLogins(env, user);
 
   const session = await createSession(env, user.id, user.role, {
     email: user.email,
@@ -115,4 +131,10 @@ export const onRequestPost = async ({ request, env }) => {
       role: user.role,
     },
   }, sessionCookie);
+};
+
+export const __testables = {
+  handleFailedLogin,
+  clearLoginLock,
+  resetFailedLogins,
 };
