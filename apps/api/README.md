@@ -12,7 +12,7 @@ Turnstile skyddar alla inloggnings- och adminflöden mot botar.
    för en fristående Worker.
 2. Uppdatera `wrangler.toml` med rätt projektnamn och riktiga bindingar innan
    driftsättning.
-3. Använd npm-skriptet `dev` (kör `wrangler pages dev ../../functions`) för
+3. Använd npm-skriptet `dev` (kör `wrangler pages dev ../.. --functions ../../functions`) för
    lokal utveckling och `deploy:*` för att trigga IaC/CI-flöden.
 
 ```sh
