@@ -1,22 +1,52 @@
-import { render, screen } from '@testing-library/react';
+import { render, screen, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
 
-test('renders Viva Impact Check heading', () => {
+const authenticatedResponse = {
+  ok: true,
+  json: async () => ({
+    authenticated: true,
+    user: { id: 'user-1', email: 'user@example.com', role: 'user' },
+  }),
+};
+
+const unauthenticatedResponse = {
+  ok: true,
+  json: async () => ({ authenticated: false, user: null }),
+};
+
+afterEach(() => {
+  jest.restoreAllMocks();
+});
+
+test('visar inloggningsvy när ingen session finns', async () => {
+  jest.spyOn(global, 'fetch').mockResolvedValueOnce(unauthenticatedResponse);
+
   render(<App />);
-  const heading = screen.getByRole('heading', { name: /viva impact check/i });
-  expect(heading).toBeInTheDocument();
+
+  expect(
+    await screen.findByRole('heading', { name: /viva impact login/i })
+  ).toBeInTheDocument();
 });
 
 test('shows error when REACT_APP_N8N_WEBHOOK_URL is missing', async () => {
   const originalEnv = process.env.REACT_APP_N8N_WEBHOOK_URL;
   delete process.env.REACT_APP_N8N_WEBHOOK_URL;
 
-  const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({});
+  const fetchMock = jest.spyOn(global, 'fetch').mockImplementation((url) => {
+    if (typeof url === 'string' && url.includes('/api/auth/me')) {
+      return Promise.resolve(authenticatedResponse);
+    }
+    return Promise.resolve({ ok: true, json: async () => ({}) });
+  });
 
   render(<App />);
 
-  const fileInput = screen.getByLabelText(/välj fil/i);
+  await waitFor(() => {
+    expect(fetchMock).toHaveBeenCalledWith('/api/auth/me', expect.any(Object));
+  });
+
+  const fileInput = await screen.findByLabelText(/välj fil/i);
   const file = new File(['test'], 'test.mp4', { type: 'video/mp4' });
   await userEvent.upload(fileInput, file);
 
@@ -32,8 +62,7 @@ test('shows error when REACT_APP_N8N_WEBHOOK_URL is missing', async () => {
   expect(
     screen.getByText(/REACT_APP_N8N_WEBHOOK_URL saknas/i)
   ).toBeInTheDocument();
-  expect(fetchMock).not.toHaveBeenCalled();
+  expect(fetchMock).toHaveBeenCalledTimes(1);
 
-  fetchMock.mockRestore();
   process.env.REACT_APP_N8N_WEBHOOK_URL = originalEnv;
 });

@@ -1,0 +1,132 @@
+.wrapper {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: linear-gradient(135deg, #0d1b2a, #1b263b, #415a77);
+  padding: 2rem;
+  box-sizing: border-box;
+}
+
+.card {
+  background: rgba(255, 255, 255, 0.95);
+  border-radius: 16px;
+  box-shadow: 0 20px 45px rgba(13, 27, 42, 0.25);
+  padding: 2.5rem 2rem;
+  max-width: 420px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+}
+
+.title {
+  margin: 0;
+  font-size: 1.75rem;
+  font-weight: 700;
+  color: #0d1b2a;
+  text-align: center;
+}
+
+.subtitle {
+  margin: 0;
+  color: #415a77;
+  text-align: center;
+  font-size: 0.95rem;
+}
+
+.form {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.label {
+  font-weight: 600;
+  color: #1b263b;
+  font-size: 0.95rem;
+}
+
+.input {
+  width: 100%;
+  padding: 0.75rem 1rem;
+  border-radius: 10px;
+  border: 1px solid rgba(65, 90, 119, 0.3);
+  font-size: 1rem;
+  transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.input:focus {
+  outline: none;
+  border-color: #1c7ed6;
+  box-shadow: 0 0 0 3px rgba(28, 126, 214, 0.2);
+}
+
+.turnstile {
+  margin-top: 0.5rem;
+}
+
+.warning {
+  background-color: rgba(255, 195, 0, 0.1);
+  border: 1px solid rgba(255, 195, 0, 0.4);
+  color: #8d6b00;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.warning code {
+  display: block;
+  font-family: 'Courier New', Courier, monospace;
+  margin-top: 0.25rem;
+  word-break: break-word;
+}
+
+.error {
+  background-color: rgba(233, 58, 94, 0.1);
+  border: 1px solid rgba(233, 58, 94, 0.4);
+  color: #a61e4d;
+  padding: 0.75rem;
+  border-radius: 8px;
+  font-size: 0.9rem;
+}
+
+.submitButton {
+  margin-top: 0.5rem;
+  background: linear-gradient(135deg, #1c7ed6, #4dabf7);
+  border: none;
+  color: white;
+  border-radius: 999px;
+  padding: 0.85rem 1rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: transform 0.2s ease, box-shadow 0.2s ease, opacity 0.2s ease;
+}
+
+.submitButton:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 24px rgba(28, 126, 214, 0.25);
+}
+
+.submitButton:disabled {
+  cursor: not-allowed;
+  opacity: 0.7;
+}
+
+.footerText {
+  margin: 0;
+  font-size: 0.85rem;
+  color: #5c677d;
+  text-align: center;
+}
+
+@media (max-width: 480px) {
+  .card {
+    padding: 2rem 1.5rem;
+  }
+
+  .title {
+    font-size: 1.5rem;
+  }
+}
