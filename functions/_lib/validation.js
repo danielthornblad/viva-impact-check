@@ -18,9 +18,6 @@ export const validatePassword = (password) => {
   if (!/[0-9]/.test(value)) {
     errors.push('Lösenordet måste innehålla minst en siffra.');
   }
-  if (!/[^A-Za-z0-9]/.test(value)) {
-    errors.push('Lösenordet måste innehålla minst ett specialtecken.');
-  }
   return { valid: errors.length === 0, errors };
 };
 
