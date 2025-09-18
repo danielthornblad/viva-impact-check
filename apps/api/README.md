@@ -1,18 +1,19 @@
 # Viva Impact API (Cloudflare Workers/Pages Functions)
 
-This directory contains the Cloudflare Pages Functions that provide Viva Impact
-med en säker inloggnings- och administrativ backend. D1 lagrar användare och
-sessioner, Workers KV cachar sessionstillstånd och Cloudflare Turnstile skyddar
-alla inloggnings- och adminflöden mot botar.
+Detta paket innehåller wrangler-konfiguration och dokumentation för Viva Impact
+API:t. Själva Cloudflare Pages Functions-koden ligger nu i repo-rotens
+`./functions` (från denna katalog når du den via `../../functions`). D1 lagrar
+användare och sessioner, Workers KV cachar sessionstillstånd och Cloudflare
+Turnstile skyddar alla inloggnings- och adminflöden mot botar.
 
 ## Getting started
 
-1. Lägg Workers-källkod i `functions/` (Pages Functions) eller `src/` för en
-   fristående Worker.
+1. Lägg Workers-källkod i rotens `./functions/` (Pages Functions) eller `src/`
+   för en fristående Worker.
 2. Uppdatera `wrangler.toml` med rätt projektnamn och riktiga bindingar innan
    driftsättning.
-3. Använd npm-skriptet `dev` för lokal utveckling och `deploy:*` för att trigga
-   IaC/CI-flöden.
+3. Använd npm-skriptet `dev` (kör `wrangler pages dev ../../functions`) för
+   lokal utveckling och `deploy:*` för att trigga IaC/CI-flöden.
 
 ```sh
 # Starta lokal Workers-emulator
