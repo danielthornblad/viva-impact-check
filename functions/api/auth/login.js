@@ -23,8 +23,10 @@ const fetchUserByEmail = async (env, email) => {
   return env.DB.prepare(
     `SELECT id, email, password_hash as passwordHash, role, is_active as isActive,
             failed_login_attempts as failedAttempts, locked_until as lockedUntil
-       FROM users WHERE email = ?`
-  ).bind(email).first();
+       FROM users WHERE LOWER(email) = ?`
+  )
+    .bind(sanitizeEmail(email))
+    .first();
 };
 
 const handleFailedLogin = async (env, user) => {

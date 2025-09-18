@@ -75,8 +75,10 @@ export const onRequestPost = async ({ request, env }) => {
   }
 
   const existingUser = await env.DB.prepare(
-    'SELECT id FROM users WHERE email = ?'
-  ).bind(normalizedEmail).first();
+    'SELECT id FROM users WHERE LOWER(email) = ?'
+  )
+    .bind(sanitizeEmail(email))
+    .first();
   if (existingUser) {
     return errorResponse(409, 'En användare med denna e-postadress finns redan.');
   }
