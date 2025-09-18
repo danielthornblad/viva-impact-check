@@ -1,9 +1,9 @@
-import { errorResponse, jsonResponse } from '../../_lib/response';
+import { errorResponse, jsonResponse } from '../../_lib/response.js';
 import {
   requireSession,
   revokeSession,
   buildSessionLogoutCookie,
-} from '../../_lib/session';
+} from '../../_lib/session.js';
 
 export const onRequestPost = async ({ request, env }) => {
   const { session, response } = await requireSession(request, env);

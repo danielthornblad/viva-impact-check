@@ -1,5 +1,5 @@
-import { jsonResponse } from '../../_lib/response';
-import { getSession } from '../../_lib/session';
+import { jsonResponse } from '../../_lib/response.js';
+import { getSession } from '../../_lib/session.js';
 
 export const onRequestGet = async ({ request, env }) => {
   const session = await getSession(request, env);
