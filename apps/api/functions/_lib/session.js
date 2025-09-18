@@ -1,5 +1,5 @@
-import { serializeCookie, expireCookie } from './cookies';
-import { jsonResponse, errorResponse } from './response';
+import { serializeCookie, expireCookie } from './cookies.js';
+import { jsonResponse, errorResponse } from './response.js';
 
 const DEFAULT_SESSION_COOKIE = 'viva_session';
 const DEFAULT_SESSION_TTL_SECONDS = 60 * 60 * 24 * 7; // 7 dagar
