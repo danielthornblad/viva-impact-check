@@ -99,7 +99,7 @@ const ResetPasswordDialog = ({ user, onClose, onSuccess }) => {
           </div>
         </form>
         <p className={styles.passwordHint}>
-          Minst 12 tecken med stora och små bokstäver, siffra samt specialtecken krävs.
+          Minst 12 tecken med stora och små bokstäver samt minst en siffra krävs.
         </p>
       </div>
     </div>
