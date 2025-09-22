@@ -1,5 +1,4 @@
-import React, { useEffect, useState } from 'react';
-import Header from './components/Header';
+import React, { useCallback, useEffect, useState } from 'react';
 import FileUpload from './components/FileUpload';
 import AnalysisResult from './components/AnalysisResult';
 import HeroSection from './components/HeroSection';
@@ -11,10 +10,12 @@ import ProgressIndicator from './components/ProgressIndicator';
 import Footer from './components/Footer';
 import ErrorBanner from './components/ErrorBanner';
 import Login from './pages/Login';
+import AdminUsers from './pages/AdminUsers';
+import Header from './components/Header';
 import { useAuth } from './providers/AuthProvider';
 import './App.css';
 
-const AdAnalyzerUI = () => {
+const AdAnalyzerUI = ({ header = null }) => {
   useEffect(() => {
     const style = document.createElement('style');
     style.textContent = `
@@ -199,7 +200,7 @@ const AdAnalyzerUI = () => {
         href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
         rel="stylesheet"
       />
-      <Header />
+      {header}
 
       <main style={{ flexGrow: 1 }}>
         {analysisResult === null ? (
@@ -257,7 +258,27 @@ const AdAnalyzerUI = () => {
 };
 
 const App = () => {
-  const { isAuthenticated, isLoading } = useAuth();
+  const { isAuthenticated, isLoading, user } = useAuth();
+  const [activeView, setActiveView] = useState('app');
+
+  const canAccessAdmin = Array.isArray(user?.roles) && user.roles.includes('admin');
+
+  useEffect(() => {
+    if (!canAccessAdmin && activeView === 'admin') {
+      setActiveView('app');
+    }
+  }, [activeView, canAccessAdmin]);
+
+  const handleNavigate = useCallback(
+    (view) => {
+      if (view === 'admin' && !canAccessAdmin) {
+        setActiveView('app');
+        return;
+      }
+      setActiveView(view);
+    },
+    [canAccessAdmin]
+  );
 
   if (isLoading) {
     return <div className="app-loading-state">Verifierar Google-session...</div>;
@@ -267,7 +288,19 @@ const App = () => {
     return <Login />;
   }
 
-  return <AdAnalyzerUI />;
+  const header = (
+    <Header
+      canAccessAdmin={canAccessAdmin}
+      activeView={activeView}
+      onNavigate={handleNavigate}
+    />
+  );
+
+  if (activeView === 'admin') {
+    return <AdminUsers header={header} onNavigate={handleNavigate} />;
+  }
+
+  return <AdAnalyzerUI header={header} />;
 };
 
 export default App;
