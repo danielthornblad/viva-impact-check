@@ -84,6 +84,9 @@ export const AuthProvider = ({ children }) => {
         setUser(data?.user ?? null);
         return data?.user ?? null;
       } catch (error) {
+        if (error?.name === 'AbortError') {
+          return null;
+        }
         console.error('Verifiering av auth-token misslyckades', error);
         clearSession();
         throw error;
@@ -209,9 +212,10 @@ export const AuthProvider = ({ children }) => {
       isAuthenticated: Boolean(token),
       isLoading,
       signInWithGoogle,
-      signOut
+      signOut,
+      verifyToken
     }),
-    [isLoading, signInWithGoogle, signOut, token, user]
+    [isLoading, signInWithGoogle, signOut, token, user, verifyToken]
   );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;
