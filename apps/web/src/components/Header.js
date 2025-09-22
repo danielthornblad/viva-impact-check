@@ -46,8 +46,18 @@ const signOutButtonStyle = {
   fontWeight: 500
 };
 
-const Header = () => {
+const Header = ({ canAccessAdmin = false, activeView = 'app', onNavigate = () => {} }) => {
   const { isAuthenticated, user, signOut, isLoading } = useAuth();
+
+  const showAdmin = canAccessAdmin && isAuthenticated;
+  const adminButtonBaseStyle = {
+    ...signOutButtonStyle,
+    borderColor: '#d1d5db'
+  };
+  const adminActiveStyle =
+    activeView === 'admin'
+      ? { backgroundColor: '#111827', color: '#ffffff', borderColor: '#111827' }
+      : { backgroundColor: '#ffffff', color: '#111827' };
 
   return (
     <header style={containerStyle}>
@@ -68,20 +78,40 @@ const Header = () => {
         {isAuthenticated && (
           <div style={authWrapperStyle}>
             {user?.name && <span style={userNameStyle}>{user.name}</span>}
-            <button
-              type="button"
-              style={signOutButtonStyle}
-              onClick={signOut}
-              disabled={isLoading}
-              onMouseEnter={(event) => {
-                event.currentTarget.style.backgroundColor = '#f9fafb';
-              }}
-              onMouseLeave={(event) => {
-                event.currentTarget.style.backgroundColor = '#ffffff';
-              }}
-            >
-              Logga ut
-            </button>
+            <div style={{ display: 'flex', gap: '8px' }}>
+              {showAdmin && (
+                <button
+                  type="button"
+                  style={{ ...adminButtonBaseStyle, ...adminActiveStyle }}
+                  onClick={() => onNavigate(activeView === 'admin' ? 'app' : 'admin')}
+                  disabled={isLoading}
+                  onMouseEnter={(event) => {
+                    event.currentTarget.style.backgroundColor =
+                      activeView === 'admin' ? '#0f172a' : '#f9fafb';
+                  }}
+                  onMouseLeave={(event) => {
+                    event.currentTarget.style.backgroundColor =
+                      activeView === 'admin' ? '#111827' : '#ffffff';
+                  }}
+                >
+                  Admin
+                </button>
+              )}
+              <button
+                type="button"
+                style={signOutButtonStyle}
+                onClick={signOut}
+                disabled={isLoading}
+                onMouseEnter={(event) => {
+                  event.currentTarget.style.backgroundColor = '#f9fafb';
+                }}
+                onMouseLeave={(event) => {
+                  event.currentTarget.style.backgroundColor = '#ffffff';
+                }}
+              >
+                Logga ut
+              </button>
+            </div>
           </div>
         )}
       </div>

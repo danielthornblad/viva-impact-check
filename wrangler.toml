@@ -1,0 +1,14 @@
+name = "viva-impact-auth"
+compatibility_date = "2024-04-05"
+
+[vars]
+# Set this to the Google OAuth client id that issues ID tokens for the frontend.
+GOOGLE_CLIENT_ID = "replace-with-google-client-id"
+
+[[d1_databases]]
+binding = "VIVA_AUTH_DB"
+database_name = "viva-impact-auth"
+# Replace the identifiers below with the ids from `wrangler d1 list` for each environment.
+database_id = "00000000-0000-0000-0000-000000000000"
+preview_database_id = "11111111-1111-1111-1111-111111111111"
+migrations_dir = "./db/migrations"

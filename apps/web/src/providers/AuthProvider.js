@@ -176,13 +176,19 @@ export const AuthProvider = ({ children }) => {
 
   const signOut = useCallback(async () => {
     setIsLoading(true);
+    const currentToken = token;
     try {
       clearSession();
       if (logoutUrl) {
         try {
+          const headers = new Headers();
+          if (currentToken) {
+            headers.set('Authorization', `Bearer ${currentToken}`);
+          }
           await fetch(logoutUrl, {
             method: 'POST',
-            credentials: 'include'
+            credentials: 'include',
+            headers
           });
         } catch (error) {
           console.warn('Kunde inte logga ut från backend-sessionen', error);
@@ -194,7 +200,7 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [clearSession, logoutUrl]);
+  }, [clearSession, logoutUrl, token]);
 
   const contextValue = useMemo(
     () => ({
