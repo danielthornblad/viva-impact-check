@@ -105,7 +105,7 @@ export const verifyGoogleIdToken = async (token, expectedAudience, fetchImpl = f
 
   const data = textEncoder.encode(`${headerSegment}.${payloadSegment}`);
   const signature = base64UrlToUint8Array(signatureSegment);
-  const isValid = await crypto.subtle.verify('RSASSA-PKCS1-v1_5', cryptoKey, signature, data);
+  const isValid = await crypto.subtle.verify({ name: 'RSASSA-PKCS1-v1_5' }, cryptoKey, signature, data);
   if (!isValid) {
     throw new Error('Invalid Google credential signature');
   }
