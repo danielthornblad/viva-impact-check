@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useEffect, useState } from 'react';
 import Header from './components/Header';
 import FileUpload from './components/FileUpload';
 import AnalysisResult from './components/AnalysisResult';
@@ -10,11 +10,12 @@ import LoadingOverlay from './components/LoadingOverlay';
 import ProgressIndicator from './components/ProgressIndicator';
 import Footer from './components/Footer';
 import ErrorBanner from './components/ErrorBanner';
+import Login from './pages/Login';
+import { useAuth } from './providers/AuthProvider';
+import './App.css';
 
 const AdAnalyzerUI = () => {
-
   useEffect(() => {
-    // Skapa en style-tagg för animationer
     const style = document.createElement('style');
     style.textContent = `
       @keyframes spin {
@@ -43,8 +44,7 @@ const AdAnalyzerUI = () => {
       }
     `;
     document.head.appendChild(style);
-    
-    // Cleanup
+
     return () => {
       document.head.removeChild(style);
     };
@@ -57,6 +57,7 @@ const AdAnalyzerUI = () => {
   const [uploadedFile, setUploadedFile] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
   const [analysisResult, setAnalysisResult] = useState(null);
+  const [errorMessage, setErrorMessage] = useState('');
 
   useEffect(() => {
     if (analysisResult) {
@@ -64,14 +65,12 @@ const AdAnalyzerUI = () => {
     }
   }, [analysisResult]);
 
-  const [errorMessage, setErrorMessage] = useState('');
-
-  const handleDrag = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    if (e.type === "dragenter" || e.type === "dragover") {
+  const handleDrag = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
+    if (event.type === 'dragenter' || event.type === 'dragover') {
       setDragActive(true);
-    } else if (e.type === "dragleave") {
+    } else if (event.type === 'dragleave') {
       setDragActive(false);
     }
   };
@@ -107,20 +106,20 @@ const AdAnalyzerUI = () => {
     return true;
   };
 
-  const handleDrop = (e) => {
-    e.preventDefault();
-    e.stopPropagation();
+  const handleDrop = (event) => {
+    event.preventDefault();
+    event.stopPropagation();
     setDragActive(false);
 
-    if (e.dataTransfer.files && e.dataTransfer.files[0]) {
-      const file = e.dataTransfer.files[0];
+    if (event.dataTransfer.files && event.dataTransfer.files[0]) {
+      const file = event.dataTransfer.files[0];
       validateFile(file);
     }
   };
 
-  const handleFileSelect = (e) => {
-    if (e.target.files && e.target.files[0]) {
-      const file = e.target.files[0];
+  const handleFileSelect = (event) => {
+    if (event.target.files && event.target.files[0]) {
+      const file = event.target.files[0];
       validateFile(file);
     }
   };
@@ -152,14 +151,15 @@ const AdAnalyzerUI = () => {
       if (process.env.NODE_ENV !== 'production') {
         console.log('Skickar till n8n:', {
           fileName: uploadedFile.name,
-          adType, platform, targetAudience
+          adType,
+          platform,
+          targetAudience
         });
       }
 
-      // Din riktiga n8n webhook URL
       const response = await fetch(webhookUrl, {
         method: 'POST',
-        body: formData,
+        body: formData
       });
 
       if (!response.ok) {
@@ -173,7 +173,6 @@ const AdAnalyzerUI = () => {
       if (process.env.NODE_ENV !== 'production') {
         console.log('N8N response:', result);
       }
-
     } catch (error) {
       console.error('N8N test failed:', error);
       setAnalyzing(false);
@@ -183,7 +182,7 @@ const AdAnalyzerUI = () => {
 
   const platforms = [
     'Facebook/Meta',
-    'Instagram', 
+    'Instagram',
     'Google Ads',
     'YouTube',
     'LinkedIn',
@@ -196,14 +195,15 @@ const AdAnalyzerUI = () => {
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f9fafb' }}>
-      <link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap" rel="stylesheet" />
-      {/* Header */}
+      <link
+        href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;700&display=swap"
+        rel="stylesheet"
+      />
       <Header />
 
       <main style={{ flexGrow: 1 }}>
         {analysisResult === null ? (
           <>
-            {/* Hero Section */}
             <HeroSection />
 
             <div style={{ maxWidth: '896px', margin: '0 auto', padding: '48px 24px' }}>
@@ -232,13 +232,8 @@ const AdAnalyzerUI = () => {
                 platforms={platforms}
               />
 
-              <AnalyzeButton
-                canAnalyze={canAnalyze}
-                analyzing={analyzing}
-                startAnalysis={startAnalysis}
-              />
+              <AnalyzeButton canAnalyze={canAnalyze} analyzing={analyzing} startAnalysis={startAnalysis} />
 
-              {/* Laddningsindikator - visas endast när analyzing är true */}
               {analyzing && <LoadingOverlay adType={adType} />}
 
               <ProgressIndicator
@@ -260,7 +255,19 @@ const AdAnalyzerUI = () => {
     </div>
   );
 };
-function App() {
-return <AdAnalyzerUI />;
-}
+
+const App = () => {
+  const { isAuthenticated, isLoading } = useAuth();
+
+  if (isLoading) {
+    return <div className="app-loading-state">Verifierar Google-session...</div>;
+  }
+
+  if (!isAuthenticated) {
+    return <Login />;
+  }
+
+  return <AdAnalyzerUI />;
+};
+
 export default App;
