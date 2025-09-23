@@ -9,14 +9,56 @@ import {
   verifyGoogleIdToken
 } from '../../_lib/auth';
 
-const isAuthTablesMissingError = (error) => {
-  const message = error?.message || error?.cause?.message;
-  if (!message || typeof message !== 'string') {
-    return false;
+const extractErrorMessages = (error, seen = new Set()) => {
+  if (!error) {
+    return [];
   }
 
-  return message.toLowerCase().includes('no such table');
+  if (typeof error === 'string') {
+    return [error];
+  }
+
+  if (Array.isArray(error)) {
+    return error.flatMap((item) => extractErrorMessages(item, seen));
+  }
+
+  if (typeof error !== 'object') {
+    return [];
+  }
+
+  if (seen.has(error)) {
+    return [];
+  }
+  seen.add(error);
+
+  const messages = [];
+
+  if (typeof error.message === 'string') {
+    messages.push(error.message);
+  }
+
+  if (error.cause) {
+    messages.push(...extractErrorMessages(error.cause, seen));
+  }
+
+  if (Array.isArray(error.errors)) {
+    for (const nestedError of error.errors) {
+      messages.push(...extractErrorMessages(nestedError, seen));
+    }
+  }
+
+  return messages;
 };
+
+const isAuthTablesMissingError = (error) =>
+  extractErrorMessages(error).some((message) => {
+    if (message == null) {
+      return false;
+    }
+
+    const normalized = String(message).toLowerCase();
+    return normalized.includes('no such table');
+  });
 
 const createAuthTablesMissingResponse = () =>
   createJsonResponse(500, {
