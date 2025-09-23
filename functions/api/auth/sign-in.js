@@ -9,6 +9,20 @@ import {
   verifyGoogleIdToken
 } from '../../_lib/auth';
 
+const isAuthTablesMissingError = (error) => {
+  const message = error?.message || error?.cause?.message;
+  if (!message || typeof message !== 'string') {
+    return false;
+  }
+
+  return message.toLowerCase().includes('no such table');
+};
+
+const createAuthTablesMissingResponse = () =>
+  createJsonResponse(500, {
+    error: 'Databasen saknar auth-tabeller – kör D1-migrationerna.'
+  });
+
 const SESSION_INSERT = `
   INSERT INTO sessions (id, account_id, token_hash, expires_at)
   VALUES (?, ?, ?, ?)
@@ -47,12 +61,32 @@ export async function onRequestPost(context) {
   }
 
   const email = googleProfile.email?.toLowerCase();
-  const account = await findAccountByEmail(database, email);
+  let account;
+  try {
+    account = await findAccountByEmail(database, email);
+  } catch (error) {
+    if (isAuthTablesMissingError(error)) {
+      console.error('Kunde inte hämta konto från auth-databasen', error);
+      return createAuthTablesMissingResponse();
+    }
+
+    throw error;
+  }
   if (!account) {
     return createJsonResponse(403, { error: 'Kontot är inte godkänt för Viva Impact' });
   }
 
-  const roles = await listRolesForAccount(database, account.id);
+  let roles;
+  try {
+    roles = await listRolesForAccount(database, account.id);
+  } catch (error) {
+    if (isAuthTablesMissingError(error)) {
+      console.error('Kunde inte hämta roller från auth-databasen', error);
+      return createAuthTablesMissingResponse();
+    }
+
+    throw error;
+  }
   const user = buildUserPayload(account, roles);
 
   const sessionToken = generateSessionToken();
