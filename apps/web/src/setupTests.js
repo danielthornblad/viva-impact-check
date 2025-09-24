@@ -8,7 +8,7 @@ import '@testing-library/jest-dom';
 vi.mock(
   '@viva/configs',
   () => ({
-    getViteConfigName: () => 'vite.config.shared.ts',
+    getViteConfigName: () => 'vite.config.shared.js',
   }),
   { virtual: true },
 );

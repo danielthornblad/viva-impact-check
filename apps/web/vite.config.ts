@@ -3,7 +3,7 @@ import { fileURLToPath } from 'node:url';
 
 import { mergeConfig } from 'vite';
 
-import sharedConfig from '@viva/configs/vite.config.shared';
+import sharedConfig from '@viva/configs/vite.config.shared.js';
 
 const projectRoot = fileURLToPath(new URL('.', import.meta.url));
 
