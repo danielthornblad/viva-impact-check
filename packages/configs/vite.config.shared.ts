@@ -34,6 +34,11 @@ const workspaceAliases = Object.fromEntries(
 
 const sharedConfig = {
   plugins: [react()],
+  esbuild: {
+    include: /src\/.*\.js$/,
+    loader: 'jsx',
+    exclude: [],
+  },
   server: {
     fs: {
       allow: [monorepoRoot],
