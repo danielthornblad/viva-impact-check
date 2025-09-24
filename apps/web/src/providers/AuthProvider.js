@@ -158,11 +158,7 @@ export const AuthProvider = ({ children }) => {
         writeStoredToken(authToken);
 
         if (verifyUrl) {
-          try {
-            await verifyToken(authToken, { skipLoadingUpdate: true });
-          } catch (verifyError) {
-            throw verifyError;
-          }
+          await verifyToken(authToken, { skipLoadingUpdate: true });
         } else {
           setToken(authToken);
           setUser(data?.user ?? null);

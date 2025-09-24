@@ -9,6 +9,8 @@ const AuthStateObserver = React.forwardRef((_, ref) => {
   return null;
 });
 
+AuthStateObserver.displayName = 'AuthStateObserver';
+
 const STORAGE_KEY = 'viva-auth-token';
 
 describe('AuthProvider verifyToken', () => {
@@ -99,11 +101,9 @@ describe('AuthProvider verifyToken', () => {
       expect(result).toEqual(user);
     });
 
-    await waitFor(() => {
-      expect(authRef.current.token).toBe(token);
-      expect(authRef.current.user).toEqual(user);
-      expect(authRef.current.isLoading).toBe(false);
-    });
+    await waitFor(() => expect(authRef.current.token).toBe(token));
+    await waitFor(() => expect(authRef.current.user).toEqual(user));
+    await waitFor(() => expect(authRef.current.isLoading).toBe(false));
 
     window.localStorage.setItem(STORAGE_KEY, token);
 

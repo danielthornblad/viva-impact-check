@@ -14,16 +14,20 @@ const ContextForm = ({ platform, setPlatform, targetAudience, setTargetAudience,
 
     <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
       <div>
-        <label style={{
-          display: 'block',
-          fontSize: '14px',
-          fontWeight: '500',
-          color: '#1f2937',
-          marginBottom: '12px',
-        }}>
+        <label
+          htmlFor="platform-select"
+          style={{
+            display: 'block',
+            fontSize: '14px',
+            fontWeight: '500',
+            color: '#1f2937',
+            marginBottom: '12px',
+          }}
+        >
           Plattform
         </label>
         <select
+          id="platform-select"
           value={platform}
           onChange={(e) => setPlatform(e.target.value)}
           style={{
@@ -43,17 +47,21 @@ const ContextForm = ({ platform, setPlatform, targetAudience, setTargetAudience,
       </div>
 
       <div>
-        <label style={{
-          display: 'block',
-          fontSize: '14px',
-          fontWeight: '500',
-          color: '#1f2937',
-          marginBottom: '12px',
-        }}>
+        <label
+          htmlFor="target-audience"
+          style={{
+            display: 'block',
+            fontSize: '14px',
+            fontWeight: '500',
+            color: '#1f2937',
+            marginBottom: '12px',
+          }}
+        >
           Målgrupp
         </label>
         <input
           type="text"
+          id="target-audience"
           value={targetAudience}
           onChange={(e) => setTargetAudience(e.target.value)}
           placeholder="t.ex. Kvinnor 25-35, intresserade av fitness"
