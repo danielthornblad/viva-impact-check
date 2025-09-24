@@ -26,6 +26,10 @@ Install dependencies for every workspace:
 npm install
 ```
 
+> **Obs!** När Vite eller relaterade verktyg uppdateras, se till att den genererade
+> `package-lock.json` också checkas in. `npm ci` kommer annars avbrytas i
+> buildmiljöer som Cloudflare Pages om låsfilen saknar de nya paketen.
+
 Run the frontend locally:
 
 ```sh
