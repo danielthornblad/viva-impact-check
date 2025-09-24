@@ -5,6 +5,7 @@
   "scripts": {
     "dev": "wrangler pages dev ../../functions --local",
     "deploy:preview": "wrangler deploy --env preview",
-    "deploy:production": "wrangler deploy --env production"
+    "deploy:production": "wrangler deploy --env production",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   }
 }
