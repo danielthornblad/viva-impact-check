@@ -11,18 +11,18 @@ const AuthStateObserver = React.forwardRef((_, ref) => {
 const STORAGE_KEY = 'viva-auth-token';
 
 describe('AuthProvider verifyToken', () => {
-  const originalVerifyUrl = process.env.REACT_APP_AUTH_VERIFY_URL;
+  const originalVerifyUrl = import.meta.env.VITE_AUTH_VERIFY_URL;
   const originalAbortController = global.AbortController;
 
   afterEach(() => {
-    process.env.REACT_APP_AUTH_VERIFY_URL = originalVerifyUrl;
+    import.meta.env.VITE_AUTH_VERIFY_URL = originalVerifyUrl;
     global.AbortController = originalAbortController;
     window.localStorage.clear();
     jest.restoreAllMocks();
   });
 
   test('keeps auth state when verification request is aborted', async () => {
-    process.env.REACT_APP_AUTH_VERIFY_URL = 'https://example.com/verify';
+    import.meta.env.VITE_AUTH_VERIFY_URL = 'https://example.com/verify';
 
     const controllers = [];
     class MockAbortSignal {

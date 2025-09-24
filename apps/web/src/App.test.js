@@ -23,9 +23,9 @@ test('renders Viva Impact Check heading', () => {
   expect(heading).toBeInTheDocument();
 });
 
-test('shows error when REACT_APP_N8N_WEBHOOK_URL is missing', async () => {
-  const originalEnv = process.env.REACT_APP_N8N_WEBHOOK_URL;
-  delete process.env.REACT_APP_N8N_WEBHOOK_URL;
+test('shows error when VITE_N8N_WEBHOOK_URL is missing', async () => {
+  const originalEnv = import.meta.env.VITE_N8N_WEBHOOK_URL;
+  delete import.meta.env.VITE_N8N_WEBHOOK_URL;
 
   const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({});
 
@@ -44,9 +44,9 @@ test('shows error when REACT_APP_N8N_WEBHOOK_URL is missing', async () => {
   const analyzeButton = screen.getByRole('button', { name: /analysera annons/i });
   await userEvent.click(analyzeButton);
 
-  expect(screen.getByText(/REACT_APP_N8N_WEBHOOK_URL saknas/i)).toBeInTheDocument();
+  expect(screen.getByText(/VITE_N8N_WEBHOOK_URL saknas/i)).toBeInTheDocument();
   expect(fetchMock).not.toHaveBeenCalled();
 
   fetchMock.mockRestore();
-  process.env.REACT_APP_N8N_WEBHOOK_URL = originalEnv;
+  import.meta.env.VITE_N8N_WEBHOOK_URL = originalEnv;
 });

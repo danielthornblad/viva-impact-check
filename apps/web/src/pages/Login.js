@@ -18,9 +18,9 @@ const Login = () => {
   );
 
   useEffect(() => {
-    const clientId = process.env.REACT_APP_GOOGLE_CLIENT_ID;
+    const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     if (!clientId) {
-      setInitError('Miljövariabeln REACT_APP_GOOGLE_CLIENT_ID saknas.');
+      setInitError('Miljövariabeln VITE_GOOGLE_CLIENT_ID saknas.');
       return undefined;
     }
 

@@ -30,9 +30,9 @@ export const AuthProvider = ({ children }) => {
   const [isLoading, setIsLoading] = useState(true);
   const verifyAbortRef = useRef();
 
-  const verifyUrl = process.env.REACT_APP_AUTH_VERIFY_URL;
-  const loginUrl = process.env.REACT_APP_AUTH_LOGIN_URL;
-  const logoutUrl = process.env.REACT_APP_AUTH_LOGOUT_URL;
+  const verifyUrl = import.meta.env.VITE_AUTH_VERIFY_URL;
+  const loginUrl = import.meta.env.VITE_AUTH_LOGIN_URL;
+  const logoutUrl = import.meta.env.VITE_AUTH_LOGOUT_URL;
 
   const clearSession = useCallback(() => {
     writeStoredToken(null);
@@ -130,7 +130,7 @@ export const AuthProvider = ({ children }) => {
       }
 
       if (!loginUrl) {
-        console.error('Miljövariabeln REACT_APP_AUTH_LOGIN_URL saknas.');
+        console.error('Miljövariabeln VITE_AUTH_LOGIN_URL saknas.');
         return;
       }
 

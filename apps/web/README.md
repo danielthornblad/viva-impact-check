@@ -7,14 +7,14 @@ the repository root.
 ## Environment Variables
 
 The application expects a webhook URL available in the environment under the
-`REACT_APP_N8N_WEBHOOK_URL` variable.
+`VITE_N8N_WEBHOOK_URL` variable.
 
 ### Local development
 
 Create a `.env` file next to this README (`apps/web/.env`):
 
 ```
-REACT_APP_N8N_WEBHOOK_URL=<url>
+VITE_N8N_WEBHOOK_URL=<url>
 ```
 
 Replace `<url>` with the webhook endpoint to be used. After setting the value,
@@ -30,7 +30,7 @@ When building or running the application in production, supply the variable in
 the environment:
 
 ```
-REACT_APP_N8N_WEBHOOK_URL=<url> npm run build:web
+VITE_N8N_WEBHOOK_URL=<url> npm run build:web
 ```
 
 Hosting services usually provide a way to define environment variables for
@@ -39,7 +39,7 @@ runtime. Cloud builds can also call the workspace script with
 
 ### Continuous integration / other environments
 
-Set `REACT_APP_N8N_WEBHOOK_URL` in the relevant environment configuration (for
+Set `VITE_N8N_WEBHOOK_URL` in the relevant environment configuration (for
 example as a secret or CI variable) before running the build or tests:
 
 ```
