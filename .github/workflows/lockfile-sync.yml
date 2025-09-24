@@ -1,0 +1,59 @@
+name: Lockfile Sync (Vite migration)
+
+on:
+  workflow_dispatch:     # körs manuellt
+  push:
+    branches: [ feature-login ]   # valfritt: kör automatiskt på din branch
+
+permissions:
+  contents: write
+  pull-requests: write
+
+env:
+  NODE_VERSION: "22"   # eller "18" om ni vill LTS
+  # Rekommenderat: sätt även "packageManager": "npm@10.9.2" i root package.json
+
+jobs:
+  sync-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: false
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      # 1) Uppdatera lockfile (npm install i roten hanterar workspaces)
+      - name: Install (update lockfile)
+        run: npm install --no-fund --no-audit
+
+      # 2) Snabb sanity check: finns Vite-deps?
+      - name: Verify vite deps present
+        run: |
+          npm ls vite @vitejs/plugin-react || true
+          npm ls -w @viva/web postcss || true
+
+      # (Valfritt) 3) Bygg för att fånga upp uppenbara fel innan PR
+      - name: Build web (vite)
+        run: npm run build:web
+        continue-on-error: true  # sätt till false om du vill gate:a
+
+      # 4) Skapa PR om något ändrats (t.ex. package-lock.json)
+      - name: Create Pull Request with lockfile update
+        uses: peter-evans/create-pull-request@v6
+        with:
+          commit-message: "chore: sync package-lock.json after Vite migration"
+          title: "chore: Sync lockfile (Vite)"
+          body: |
+            Denna PR synkar **package-lock.json** efter Vite-migreringen så att Cloudflare (som kör `npm ci`) inte faller på “Missing from lock file”.
+            - Kör `npm install` i roten (workspaces-aware).
+            - Snabb verifiering av Vite- och PostCSS-deps.
+            - (Valfritt) byggtest kördes: se jobblogg.
+          branch: chore/sync-lockfile-vite
+          delete-branch: true
+          author: GitHub Actions <actions@github.com>
+          committer: GitHub Actions <actions@github.com>
