@@ -9,6 +9,6 @@
   "scripts": {
     "start:web": "npm run start --workspace @viva/web",
     "build:web": "npm run build --workspace @viva/web",
-    "test:web": "npm run test --workspace @viva/web -- --watchAll=false"
+    "test:web": "npm run test --workspace @viva/web"
   }
 }
