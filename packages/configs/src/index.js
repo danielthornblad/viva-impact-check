@@ -1,5 +1,5 @@
-const getViteConfigName = () => 'vite.config.shared.ts';
+export const getViteConfigName = () => 'vite.config.shared.ts';
 
-module.exports = {
+export default {
   getViteConfigName,
 };

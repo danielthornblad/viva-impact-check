@@ -1,5 +1,6 @@
-const getPrimaryCtaLabel = (action = 'start') => `Time to ${action} with Viva Impact!`;
+export const getPrimaryCtaLabel = (action = 'start') =>
+  `Time to ${action} with Viva Impact!`;
 
-module.exports = {
+export default {
   getPrimaryCtaLabel,
 };
