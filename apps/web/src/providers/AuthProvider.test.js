@@ -1,4 +1,5 @@
 import React from 'react';
+import { vi } from 'vitest';
 import { act, render, waitFor } from '@testing-library/react';
 import { AuthProvider, useAuth } from './AuthProvider';
 
@@ -18,7 +19,7 @@ describe('AuthProvider verifyToken', () => {
     import.meta.env.VITE_AUTH_VERIFY_URL = originalVerifyUrl;
     global.AbortController = originalAbortController;
     window.localStorage.clear();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   test('keeps auth state when verification request is aborted', async () => {
@@ -64,7 +65,7 @@ describe('AuthProvider verifyToken', () => {
     const token = 'valid-token';
     const user = { name: 'Testare' };
 
-    const fetchMock = jest.spyOn(global, 'fetch');
+    const fetchMock = vi.spyOn(global, 'fetch');
     fetchMock.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ user })

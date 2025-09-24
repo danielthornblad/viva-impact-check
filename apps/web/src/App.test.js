@@ -1,3 +1,4 @@
+import { vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
@@ -9,8 +10,8 @@ const renderWithAuth = (ui, authOverrides = {}) => {
     user: { name: 'Testare' },
     isAuthenticated: true,
     isLoading: false,
-    signInWithGoogle: jest.fn(),
-    signOut: jest.fn(),
+    signInWithGoogle: vi.fn(),
+    signOut: vi.fn(),
     ...authOverrides
   };
 
@@ -27,7 +28,7 @@ test('shows error when VITE_N8N_WEBHOOK_URL is missing', async () => {
   const originalEnv = import.meta.env.VITE_N8N_WEBHOOK_URL;
   delete import.meta.env.VITE_N8N_WEBHOOK_URL;
 
-  const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({});
+  const fetchMock = vi.spyOn(global, 'fetch').mockResolvedValue({});
 
   renderWithAuth(<App />);
 
