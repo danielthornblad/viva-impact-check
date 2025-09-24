@@ -1,9 +1,10 @@
+# .github/workflows/lockfile-sync.yml
 name: Lockfile Sync (auto-commit)
 
 on:
   workflow_dispatch:
   push:
-    branches: [ feature-login-vite ]   # ändra till den gren Cloudflare bygger
+    branches: [ feature-login-vite ]
 
 permissions:
   contents: write
@@ -17,7 +18,8 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
-          persist-credentials: false
+          persist-credentials: true   # <— viktigt
+          fetch-depth: 0              # bra vid push/commit
 
       - name: Use Node.js ${{ env.NODE_VERSION }}
         uses: actions/setup-node@v4
@@ -25,17 +27,9 @@ jobs:
           node-version: ${{ env.NODE_VERSION }}
           cache: npm
 
-      # Uppdatera lockfilen för hela monorepot (workspaces-aware)
       - name: Install (update lockfile)
         run: npm install --no-fund --no-audit
 
-      # (valfritt) sanity check
-      - name: Verify vite deps present
-        run: |
-          npm ls vite @vitejs/plugin-react || true
-          npm ls -w @viva/web postcss || true
-
-      # Commit & push om något ändrats (t.ex. package-lock.json)
       - name: Commit lockfile if changed
         uses: stefanzweifel/git-auto-commit-action@v5
         with:
