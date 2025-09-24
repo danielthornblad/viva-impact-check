@@ -63,10 +63,10 @@ Följande variabler måste sättas i Pages/Workers-miljön:
 Frontenden använder följande variabler (t.ex. i `.env`):
 
 ```bash
-REACT_APP_AUTH_LOGIN_URL=/api/auth/sign-in
-REACT_APP_AUTH_VERIFY_URL=/api/auth/session
-REACT_APP_AUTH_LOGOUT_URL=/api/auth/sign-out
-REACT_APP_ADMIN_ACCOUNTS_URL=/api/admin/accounts
+VITE_AUTH_LOGIN_URL=/api/auth/sign-in
+VITE_AUTH_VERIFY_URL=/api/auth/session
+VITE_AUTH_LOGOUT_URL=/api/auth/sign-out
+VITE_ADMIN_ACCOUNTS_URL=/api/admin/accounts
 ```
 
 ## Cloudflare Pages Functions

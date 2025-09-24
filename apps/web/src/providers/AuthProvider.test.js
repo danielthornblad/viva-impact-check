@@ -1,4 +1,5 @@
 import React from 'react';
+import { vi } from 'vitest';
 import { act, render, waitFor } from '@testing-library/react';
 import { AuthProvider, useAuth } from './AuthProvider';
 
@@ -8,21 +9,23 @@ const AuthStateObserver = React.forwardRef((_, ref) => {
   return null;
 });
 
+AuthStateObserver.displayName = 'AuthStateObserver';
+
 const STORAGE_KEY = 'viva-auth-token';
 
 describe('AuthProvider verifyToken', () => {
-  const originalVerifyUrl = process.env.REACT_APP_AUTH_VERIFY_URL;
+  const originalVerifyUrl = import.meta.env.VITE_AUTH_VERIFY_URL;
   const originalAbortController = global.AbortController;
 
   afterEach(() => {
-    process.env.REACT_APP_AUTH_VERIFY_URL = originalVerifyUrl;
+    import.meta.env.VITE_AUTH_VERIFY_URL = originalVerifyUrl;
     global.AbortController = originalAbortController;
     window.localStorage.clear();
-    jest.restoreAllMocks();
+    vi.restoreAllMocks();
   });
 
   test('keeps auth state when verification request is aborted', async () => {
-    process.env.REACT_APP_AUTH_VERIFY_URL = 'https://example.com/verify';
+    import.meta.env.VITE_AUTH_VERIFY_URL = 'https://example.com/verify';
 
     const controllers = [];
     class MockAbortSignal {
@@ -64,7 +67,7 @@ describe('AuthProvider verifyToken', () => {
     const token = 'valid-token';
     const user = { name: 'Testare' };
 
-    const fetchMock = jest.spyOn(global, 'fetch');
+    const fetchMock = vi.spyOn(global, 'fetch');
     fetchMock.mockResolvedValueOnce({
       ok: true,
       json: async () => ({ user })
@@ -98,11 +101,9 @@ describe('AuthProvider verifyToken', () => {
       expect(result).toEqual(user);
     });
 
-    await waitFor(() => {
-      expect(authRef.current.token).toBe(token);
-      expect(authRef.current.user).toEqual(user);
-      expect(authRef.current.isLoading).toBe(false);
-    });
+    await waitFor(() => expect(authRef.current.token).toBe(token));
+    await waitFor(() => expect(authRef.current.user).toEqual(user));
+    await waitFor(() => expect(authRef.current.isLoading).toBe(false));
 
     window.localStorage.setItem(STORAGE_KEY, token);
 

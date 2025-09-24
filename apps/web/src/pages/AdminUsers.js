@@ -164,7 +164,7 @@ const AdminUsers = ({ header = null, onNavigate = () => {} }) => {
   const [newAccount, setNewAccount] = useState({ email: '', displayName: '', roles: [] });
 
   const baseUrl = useMemo(
-    () => process.env.REACT_APP_ADMIN_ACCOUNTS_URL || '/api/admin/accounts',
+    () => import.meta.env.VITE_ADMIN_ACCOUNTS_URL || '/api/admin/accounts',
     []
   );
 

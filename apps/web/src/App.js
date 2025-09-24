@@ -128,9 +128,9 @@ const AdAnalyzerUI = ({ header = null }) => {
   const startAnalysis = async () => {
     if (!canAnalyze || !uploadedFile) return;
 
-    const webhookUrl = process.env.REACT_APP_N8N_WEBHOOK_URL;
+    const webhookUrl = import.meta.env.VITE_N8N_WEBHOOK_URL;
     if (!webhookUrl) {
-      setErrorMessage('Miljövariabeln REACT_APP_N8N_WEBHOOK_URL saknas. Kan inte skicka analysförfrågan.');
+      setErrorMessage('Miljövariabeln VITE_N8N_WEBHOOK_URL saknas. Kan inte skicka analysförfrågan.');
       return;
     }
 
@@ -149,7 +149,7 @@ const AdAnalyzerUI = ({ header = null }) => {
       formData.append('fileType', uploadedFile.type);
       formData.append('timestamp', Date.now().toString());
 
-      if (process.env.NODE_ENV !== 'production') {
+      if (import.meta.env.DEV) {
         console.log('Skickar till n8n:', {
           fileName: uploadedFile.name,
           adType,
@@ -171,7 +171,7 @@ const AdAnalyzerUI = ({ header = null }) => {
       setAnalysisResult(result);
       setAnalyzing(false);
 
-      if (process.env.NODE_ENV !== 'production') {
+      if (import.meta.env.DEV) {
         console.log('N8N response:', result);
       }
     } catch (error) {
