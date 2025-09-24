@@ -3,7 +3,7 @@ name: Lockfile Sync (auto-commit)
 on:
   workflow_dispatch:
   push:
-    branches: [ feature-login ]   # ändra till den gren Cloudflare bygger
+    branches: [ feature-login-vite ]   # ändra till den gren Cloudflare bygger
 
 permissions:
   contents: write
