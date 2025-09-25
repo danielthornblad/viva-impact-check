@@ -19,6 +19,24 @@ const Login = () => {
   );
 
   useEffect(() => {
+    const url = new URL(window.location.href);
+    const credentialFromUrl = url.searchParams.get('credential');
+    const hasGoogleParams = credentialFromUrl || url.searchParams.has('g_csrf_token');
+
+    if (credentialFromUrl) {
+      signInWithGoogle(credentialFromUrl);
+    }
+
+    if (hasGoogleParams) {
+      url.searchParams.delete('credential');
+      url.searchParams.delete('g_csrf_token');
+      const newSearch = url.searchParams.toString();
+      const newUrl = `${url.pathname}${newSearch ? `?${newSearch}` : ''}${url.hash}`;
+      window.history.replaceState({}, '', newUrl);
+    }
+  }, [signInWithGoogle]);
+
+  useEffect(() => {
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     if (!clientId) {
       setInitError('Miljövariabeln VITE_GOOGLE_CLIENT_ID saknas.');
@@ -30,10 +48,13 @@ const Login = () => {
         return;
       }
 
+      const redirectUri = `${window.location.origin}/api/auth/google-redirect`;
+
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: handleCredentialResponse,
-        ux_mode: 'popup',
+        ux_mode: 'redirect',
+        login_uri: redirectUri,
         auto_select: false,
         use_fedcm_for_prompt: true
       });
