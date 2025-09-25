@@ -48,7 +48,7 @@ const Login = () => {
         return;
       }
 
-      const redirectUri = `${window.location.origin}${window.location.pathname}`;
+      const redirectUri = `${window.location.origin}/api/auth/google-redirect`;
 
       window.google.accounts.id.initialize({
         client_id: clientId,
