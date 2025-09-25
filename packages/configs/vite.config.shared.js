@@ -35,7 +35,7 @@ const sharedConfig = {
   plugins: [react()],
   esbuild: {
     loader: 'jsx',
-    include: /src\/.*\.js$/,
+    include: /src\/.*\.[jt]sx?$/,
   },
   server: {
     fs: {
