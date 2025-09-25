@@ -34,7 +34,8 @@ const Login = () => {
         client_id: clientId,
         callback: handleCredentialResponse,
         ux_mode: 'popup',
-        auto_select: false
+        auto_select: false,
+        use_fedcm_for_prompt: true
       });
 
       if (buttonRef.current) {
