@@ -32,9 +32,9 @@ const Login = () => {
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: handleCredentialResponse,
-        ux_mode: 'redirect',
+        ux_mode: 'popup',
         auto_select: false,
-        login_uri: window.location.href
+        use_fedcm_for_prompt: true
       });
 
       if (buttonRef.current) {
