@@ -57,8 +57,13 @@ const Login = () => {
       let loginRedirectUri = window.location.origin;
 
       if (configuredRedirect) {
+        const substitutedRedirect = configuredRedirect.replaceAll(
+          /\{\{\s*ORIGIN\s*\}\}/g,
+          window.location.origin
+        );
+
         try {
-          const redirectUrl = new URL(configuredRedirect);
+          const redirectUrl = new URL(substitutedRedirect, window.location.origin);
           loginRedirectUri = redirectUrl.toString();
         } catch (error) {
           console.error('Invalid VITE_GOOGLE_REDIRECT_URI', error);
