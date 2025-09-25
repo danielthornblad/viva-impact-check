@@ -53,11 +53,25 @@ const Login = () => {
         return;
       }
 
+      const configuredRedirect = import.meta.env.VITE_GOOGLE_REDIRECT_URI?.trim();
+      let loginRedirectUri = `${window.location.origin}${window.location.pathname}`;
+
+      if (configuredRedirect) {
+        try {
+          const redirectUrl = new URL(configuredRedirect);
+          loginRedirectUri = redirectUrl.toString();
+        } catch (error) {
+          console.error('Invalid VITE_GOOGLE_REDIRECT_URI', error);
+          setInitError('Ogiltig VITE_GOOGLE_REDIRECT_URI.');
+          return;
+        }
+      }
+
       window.google.accounts.id.initialize({
         client_id: clientId,
         callback: handleCredentialResponse,
         ux_mode: 'redirect',
-        login_uri: `${window.location.origin}${window.location.pathname}`,
+        login_uri: loginRedirectUri,
         auto_select: false,
         use_fedcm_for_prompt: true
       });
