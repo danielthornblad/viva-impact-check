@@ -9,6 +9,134 @@ const Login = () => {
   const [scriptLoaded, setScriptLoaded] = useState(false);
   const [initError, setInitError] = useState('');
 
+  const returnParamName = import.meta.env.VITE_GOOGLE_REDIRECT_RETURN_PARAM?.trim() || '';
+  const allowedReturnOriginsConfig =
+    import.meta.env.VITE_GOOGLE_REDIRECT_ALLOWED_RETURN_ORIGINS?.trim() || '';
+
+  const resolveAllowedReturnOrigins = useCallback(() => {
+    if (typeof window === 'undefined' || !allowedReturnOriginsConfig) {
+      return [];
+    }
+
+    return allowedReturnOriginsConfig
+      .split(',')
+      .map((entry) =>
+        entry
+          .trim()
+          .replaceAll(/\{\{\s*ORIGIN\s*\}\}/gi, window.location.origin)
+      )
+      .filter(Boolean);
+  }, [allowedReturnOriginsConfig]);
+
+  const isAllowedReturnTarget = useCallback(
+    (targetUrl) => {
+      if (!targetUrl) {
+        return false;
+      }
+
+      const allowedOrigins = resolveAllowedReturnOrigins();
+      const currentOrigin = window.location.origin;
+
+      try {
+        const parsedTarget = new URL(targetUrl);
+        const targetOrigin = parsedTarget.origin;
+
+        if (targetOrigin === currentOrigin) {
+          return true;
+        }
+
+        const targetHostname = parsedTarget.hostname.toLowerCase();
+        const targetProtocol = parsedTarget.protocol.replace(':', '').toLowerCase();
+
+        return allowedOrigins.some((pattern) => {
+          if (pattern === '*') {
+            return true;
+          }
+
+          const normalizedPattern = pattern.toLowerCase();
+          let scheme = '';
+          let hostPattern = normalizedPattern;
+
+          if (hostPattern.startsWith('https://')) {
+            scheme = 'https';
+            hostPattern = hostPattern.slice('https://'.length);
+          } else if (hostPattern.startsWith('http://')) {
+            scheme = 'http';
+            hostPattern = hostPattern.slice('http://'.length);
+          }
+
+          if (hostPattern.startsWith('*.')) {
+            const domain = hostPattern.slice(2);
+            const matchesHost =
+              targetHostname === domain || targetHostname.endsWith(`.${domain}`);
+
+            if (!matchesHost) {
+              return false;
+            }
+
+            if (scheme && scheme !== targetProtocol) {
+              return false;
+            }
+
+            return true;
+          }
+
+          if (!scheme && !hostPattern.includes('/')) {
+            return targetHostname === hostPattern;
+          }
+
+          try {
+            const patternUrl = new URL(pattern);
+            return patternUrl.origin.toLowerCase() === targetOrigin.toLowerCase();
+          } catch (error) {
+            return false;
+          }
+        });
+      } catch (error) {
+        console.warn('Ogiltig return-url', error);
+        return false;
+      }
+    },
+    [resolveAllowedReturnOrigins]
+  );
+
+  const resolveConfiguredRedirect = useCallback(() => {
+    if (typeof window === 'undefined') {
+      return null;
+    }
+
+    const configuredRedirect = import.meta.env.VITE_GOOGLE_REDIRECT_URI?.trim();
+    const currentOrigin = window.location.origin;
+    const replacements = {
+      ORIGIN: currentOrigin,
+      RETURN_TO: encodeURIComponent(window.location.href),
+    };
+
+    let loginRedirectUri = currentOrigin + window.location.pathname;
+
+    if (configuredRedirect) {
+      const substitutedRedirect = configuredRedirect.replaceAll(
+        /\{\{\s*(ORIGIN|RETURN_TO)\s*\}\}/gi,
+        (_match, token) => replacements[token.toUpperCase()] ?? ''
+      );
+
+      try {
+        const redirectUrl = new URL(substitutedRedirect, currentOrigin);
+        loginRedirectUri = redirectUrl.toString();
+      } catch (error) {
+        console.error('Invalid VITE_GOOGLE_REDIRECT_URI', error);
+        setInitError('Ogiltig VITE_GOOGLE_REDIRECT_URI.');
+        return null;
+      }
+    }
+
+    if (!loginRedirectUri.endsWith('/') && window.location.pathname === '/') {
+      loginRedirectUri = `${loginRedirectUri}/`;
+    }
+
+    return loginRedirectUri;
+  }, []);
+
   const handleCredentialResponse = useCallback(
     (response) => {
       if (response?.credential) {
@@ -30,18 +158,72 @@ const Login = () => {
       return;
     }
 
-    signInWithGoogle(redirectCredential);
+    let isMounted = true;
 
-    currentUrl.searchParams.delete('credential');
-    currentUrl.searchParams.delete('g_csrf_token');
+    const processRedirectCredential = async () => {
+      try {
+        await signInWithGoogle(redirectCredential);
+      } finally {
+        if (isMounted) {
+          let returnTarget = null;
 
-    const sanitizedSearch = currentUrl.searchParams.toString();
-    const newUrl = `${currentUrl.pathname}${sanitizedSearch ? `?${sanitizedSearch}` : ''}${currentUrl.hash}`;
+          if (returnParamName) {
+            const rawReturnValue = currentUrl.searchParams.get(returnParamName);
 
-    window.history.replaceState({}, document.title, newUrl);
-  }, [signInWithGoogle]);
+            if (rawReturnValue) {
+              let decodedReturnValue = rawReturnValue;
+
+              try {
+                decodedReturnValue = decodeURIComponent(rawReturnValue);
+              } catch (error) {
+                console.warn('Kunde inte avkoda return-parametern', error);
+              }
+
+              if (isAllowedReturnTarget(decodedReturnValue)) {
+                returnTarget = decodedReturnValue;
+              } else {
+                console.warn('Ignorerar otillåten return-adress', decodedReturnValue);
+              }
+            }
+          }
+
+          currentUrl.searchParams.delete('credential');
+          currentUrl.searchParams.delete('g_csrf_token');
+
+          if (returnParamName) {
+            currentUrl.searchParams.delete(returnParamName);
+          }
+
+          const sanitizedSearch = currentUrl.searchParams.toString();
+          const newUrl = `${currentUrl.pathname}${
+            sanitizedSearch ? `?${sanitizedSearch}` : ''
+          }${currentUrl.hash}`;
+
+          window.history.replaceState({}, document.title, newUrl);
+
+          if (returnTarget) {
+            window.location.replace(returnTarget);
+          }
+        }
+      }
+    };
+
+    void processRedirectCredential();
+
+    return () => {
+      isMounted = false;
+    };
+  }, [
+    isAllowedReturnTarget,
+    returnParamName,
+    signInWithGoogle,
+  ]);
 
   useEffect(() => {
+    if (typeof window === 'undefined') {
+      return undefined;
+    }
+
     const clientId = import.meta.env.VITE_GOOGLE_CLIENT_ID;
     if (!clientId) {
       setInitError('Miljövariabeln VITE_GOOGLE_CLIENT_ID saknas.');
@@ -53,29 +235,10 @@ const Login = () => {
         return;
       }
 
-      const configuredRedirect = import.meta.env.VITE_GOOGLE_REDIRECT_URI?.trim();
-      let loginRedirectUri = window.location.origin;
+      const loginRedirectUri = resolveConfiguredRedirect();
 
-      if (configuredRedirect) {
-        const substitutedRedirect = configuredRedirect.replaceAll(
-          /\{\{\s*ORIGIN\s*\}\}/g,
-          window.location.origin
-        );
-
-        try {
-          const redirectUrl = new URL(substitutedRedirect, window.location.origin);
-          loginRedirectUri = redirectUrl.toString();
-        } catch (error) {
-          console.error('Invalid VITE_GOOGLE_REDIRECT_URI', error);
-          setInitError('Ogiltig VITE_GOOGLE_REDIRECT_URI.');
-          return;
-        }
-      } else if (window.location.pathname && window.location.pathname !== '/') {
-        const normalizedPath = window.location.pathname.endsWith('/')
-          ? window.location.pathname.slice(0, -1)
-          : window.location.pathname;
-
-        loginRedirectUri = `${window.location.origin}${normalizedPath}`;
+      if (!loginRedirectUri) {
+        return;
       }
 
       window.google.accounts.id.initialize({
@@ -117,7 +280,7 @@ const Login = () => {
     return () => {
       document.head.removeChild(script);
     };
-  }, [handleCredentialResponse]);
+  }, [handleCredentialResponse, resolveConfiguredRedirect]);
 
   return (
     <div className="login-page">
