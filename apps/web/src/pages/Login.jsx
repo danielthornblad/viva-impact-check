@@ -112,7 +112,16 @@ const Login = () => {
       RETURN_TO: encodeURIComponent(window.location.href),
     };
 
-    let loginRedirectUri = currentOrigin + window.location.pathname;
+    const fallbackRedirect = new URL('/oauth/google/callback', currentOrigin);
+
+    if (returnParamName) {
+      fallbackRedirect.searchParams.set(
+        returnParamName,
+        encodeURIComponent(window.location.href)
+      );
+    }
+
+    let loginRedirectUri = fallbackRedirect.toString();
 
     if (configuredRedirect) {
       const substitutedRedirect = configuredRedirect.replaceAll(
@@ -130,12 +139,8 @@ const Login = () => {
       }
     }
 
-    if (!loginRedirectUri.endsWith('/') && window.location.pathname === '/') {
-      loginRedirectUri = `${loginRedirectUri}/`;
-    }
-
     return loginRedirectUri;
-  }, []);
+  }, [returnParamName]);
 
   const handleCredentialResponse = useCallback(
     (response) => {

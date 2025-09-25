@@ -79,5 +79,11 @@ Autentiserings-API:t exponeras via Pages Functions i `functions/api/`:
 - `GET/POST /api/admin/accounts` – hantera allow-listen (endast admin).
 - `PUT/DELETE /api/admin/accounts/:id` – uppdatera eller ta bort konton.
 
+Dessutom finns en hjälpfunktion för Google-redirects:
+
+- `GET/POST /oauth/google/callback` – tar emot Google Identity Services-redirects
+  (inklusive POST-formulär) och skickar vidare till login-sidan med samma
+  parametrar.
+
 Kom ihåg att deploya Pages-projektet tillsammans med uppdaterad `wrangler.toml`
 och migrations för att hålla alla miljöer i synk.
