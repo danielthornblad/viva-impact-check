@@ -34,8 +34,11 @@ const workspaceAliases = Object.fromEntries(
 const sharedConfig = {
   plugins: [react()],
   esbuild: {
-    loader: 'jsx',
     include: /src\/.*\.[jt]sx?$/,
+    loader: {
+      '.js': 'jsx',
+      '.mjs': 'jsx',
+    },
   },
   server: {
     fs: {
