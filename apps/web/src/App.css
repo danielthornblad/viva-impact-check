@@ -36,3 +36,13 @@
     transform: rotate(360deg);
   }
 }
+
+.app-loading-state {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #f9fafb;
+  font-size: 18px;
+  color: #4b5563;
+}

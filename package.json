@@ -2,13 +2,14 @@
   "name": "viva-impact-monorepo",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "workspaces": [
     "apps/*",
     "packages/*"
   ],
   "scripts": {
-    "start:web": "npm run start --workspace @viva/web",
+    "start:web": "npm run dev --workspace @viva/web",
     "build:web": "npm run build --workspace @viva/web",
-    "test:web": "npm run test --workspace @viva/web -- --watchAll=false"
+    "test:web": "npm run test --workspace @viva/web"
   }
 }

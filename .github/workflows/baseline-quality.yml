@@ -1,0 +1,42 @@
+name: Baseline Quality (audit + lint)
+
+on:
+  push:
+    branches: [ feature-login ]
+  pull_request:
+    branches: [ feature-login ]
+
+permissions:
+  contents: read
+
+env:
+  NODE_VERSION: "22" # eller "18" om du vill köra LTS
+
+jobs:
+  audit-and-lint:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Clean install (root)
+        run: npm ci --no-audit --no-fund
+
+      # --- npm audit (failar på high/critical) ---
+      - name: npm audit @viva/web
+        run: npm audit --workspace=@viva/web --production --audit-level=high
+
+      - name: npm audit @viva/api
+        run: npm audit --workspace=@viva/api --production --audit-level=high
+
+      # --- ESLint (kräver att scripts finns i respektive package.json) ---
+      - name: Lint @viva/web
+        run: npm run lint --workspace=@viva/web
+
+      - name: Lint @viva/api
+        run: npm run lint --workspace=@viva/api

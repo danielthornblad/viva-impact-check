@@ -1,0 +1,37 @@
+# .github/workflows/lockfile-sync.yml
+name: Lockfile Sync (auto-commit)
+
+on:
+  workflow_dispatch:
+  push:
+    branches: [ feature-login-vite ]
+
+permissions:
+  contents: write
+
+env:
+  NODE_VERSION: "22"
+
+jobs:
+  sync-lockfile:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          persist-credentials: true   # <— viktigt
+          fetch-depth: 0              # bra vid push/commit
+
+      - name: Use Node.js ${{ env.NODE_VERSION }}
+        uses: actions/setup-node@v4
+        with:
+          node-version: ${{ env.NODE_VERSION }}
+          cache: npm
+
+      - name: Install (update lockfile)
+        run: npm install --no-fund --no-audit
+
+      - name: Commit lockfile if changed
+        uses: stefanzweifel/git-auto-commit-action@v5
+        with:
+          commit_message: "chore: sync package-lock.json for Vite"
+          branch: ${{ github.ref_name }}

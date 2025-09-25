@@ -1,20 +1,36 @@
+import { vi } from 'vitest';
 import { render, screen } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
 import App from './App';
+import AuthContext from './providers/AuthProvider';
+
+const renderWithAuth = (ui, authOverrides = {}) => {
+  const defaultAuthValue = {
+    token: 'mock-token',
+    user: { name: 'Testare' },
+    isAuthenticated: true,
+    isLoading: false,
+    signInWithGoogle: vi.fn(),
+    signOut: vi.fn(),
+    ...authOverrides
+  };
+
+  return render(<AuthContext.Provider value={defaultAuthValue}>{ui}</AuthContext.Provider>);
+};
 
 test('renders Viva Impact Check heading', () => {
-  render(<App />);
+  renderWithAuth(<App />);
   const heading = screen.getByRole('heading', { name: /viva impact check/i });
   expect(heading).toBeInTheDocument();
 });
 
-test('shows error when REACT_APP_N8N_WEBHOOK_URL is missing', async () => {
-  const originalEnv = process.env.REACT_APP_N8N_WEBHOOK_URL;
-  delete process.env.REACT_APP_N8N_WEBHOOK_URL;
+test('shows error when VITE_N8N_WEBHOOK_URL is missing', async () => {
+  const originalEnv = import.meta.env.VITE_N8N_WEBHOOK_URL;
+  delete import.meta.env.VITE_N8N_WEBHOOK_URL;
 
-  const fetchMock = jest.spyOn(global, 'fetch').mockResolvedValue({});
+  const fetchMock = vi.spyOn(global, 'fetch').mockResolvedValue({});
 
-  render(<App />);
+  renderWithAuth(<App />);
 
   const fileInput = screen.getByLabelText(/välj fil/i);
   const file = new File(['test'], 'test.mp4', { type: 'video/mp4' });
@@ -29,11 +45,9 @@ test('shows error when REACT_APP_N8N_WEBHOOK_URL is missing', async () => {
   const analyzeButton = screen.getByRole('button', { name: /analysera annons/i });
   await userEvent.click(analyzeButton);
 
-  expect(
-    screen.getByText(/REACT_APP_N8N_WEBHOOK_URL saknas/i)
-  ).toBeInTheDocument();
+  expect(screen.getByText(/VITE_N8N_WEBHOOK_URL saknas/i)).toBeInTheDocument();
   expect(fetchMock).not.toHaveBeenCalled();
 
   fetchMock.mockRestore();
-  process.env.REACT_APP_N8N_WEBHOOK_URL = originalEnv;
+  import.meta.env.VITE_N8N_WEBHOOK_URL = originalEnv;
 });

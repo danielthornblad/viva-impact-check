@@ -2,9 +2,11 @@
   "name": "@viva/api",
   "version": "0.1.0",
   "private": true,
+  "type": "module",
   "scripts": {
-    "dev": "echo \"wrangler pages dev ./functions --local expected once functions are implemented\"",
-    "deploy:preview": "echo \"wrangler deploy --env preview triggered via CI\"",
-    "deploy:production": "echo \"wrangler deploy --env production triggered via IaC\""
+    "dev": "wrangler pages dev ../../functions --local",
+    "deploy:preview": "wrangler deploy --env preview",
+    "deploy:production": "wrangler deploy --env production",
+    "lint": "eslint . --ext .js,.jsx,.ts,.tsx"
   }
 }
