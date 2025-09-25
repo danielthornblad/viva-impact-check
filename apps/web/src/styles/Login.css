@@ -96,7 +96,6 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  gap: 8px;
   margin-bottom: 24px;
   position: relative;
   z-index: 1;
@@ -106,15 +105,6 @@
   height: 36px;
   width: auto;
   color: #02443e;
-}
-
-.login-brand-text {
-  font-size: 16px;
-  font-weight: 600;
-  color: rgba(2, 68, 62, 0.9);
-  letter-spacing: 0.05em;
-  text-transform: uppercase;
-  display: block;
 }
 
 .login-title {

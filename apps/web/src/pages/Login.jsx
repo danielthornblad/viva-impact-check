@@ -90,7 +90,6 @@ const Login = () => {
         <div className="login-panel">
           <div className="login-brand">
             <VivaLogo className="login-logo" />
-            <span className="login-brand-text">VIVA Impact Check</span>
           </div>
           <h1 className="login-title">Logga in till VIVA Impact Check</h1>
           <p className="login-subtitle">
