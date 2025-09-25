@@ -3,7 +3,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 import react from '@vitejs/plugin-react';
-import { defineConfig, mergeConfig, type UserConfig } from 'vite';
+import { defineConfig, mergeConfig } from 'vite';
 
 const packageDir = fileURLToPath(new URL('.', import.meta.url));
 const monorepoRoot = path.resolve(packageDir, '..', '..');
@@ -20,9 +20,8 @@ const workspaceAliases = Object.fromEntries(
 
       if (!fs.existsSync(packageJsonPath)) return [];
 
-      const { name } = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8')) as {
-        name?: string;
-      };
+      /** @type {{ name?: string }} */
+      const { name } = JSON.parse(fs.readFileSync(packageJsonPath, 'utf-8'));
 
       if (!name) return [];
 
@@ -30,10 +29,25 @@ const workspaceAliases = Object.fromEntries(
 
       return [[name, fs.existsSync(sourceDir) ? sourceDir : packageRoot]];
     }),
-) as Record<string, string>;
+);
 
-const sharedConfig: UserConfig = {
-  plugins: [react()],
+const sharedConfig = {
+  plugins: [
+    react({
+      include: /\.(?:j|t)sx?$/,
+    }),
+  ],
+  esbuild: {
+    include: /src\/.*\.[mc]?jsx?$/,
+    loader: 'jsx',
+  },
+  optimizeDeps: {
+    esbuildOptions: {
+      loader: {
+        '.js': 'jsx',
+      },
+    },
+  },
   server: {
     fs: {
       allow: [monorepoRoot],
@@ -44,7 +58,7 @@ const sharedConfig: UserConfig = {
   },
 };
 
-export const withSharedConfig = (config: UserConfig = {}) =>
+export const withSharedConfig = (config = {}) =>
   defineConfig(mergeConfig(sharedConfig, config));
 
 export default defineConfig(sharedConfig);

@@ -1,5 +1,6 @@
-const getSharedGreeting = (name = 'team') => `Viva Impact says hello to the ${name}!`;
+export const getSharedGreeting = (name = 'team') =>
+  `Viva Impact says hello to the ${name}!`;
 
-module.exports = {
+export default {
   getSharedGreeting,
 };
