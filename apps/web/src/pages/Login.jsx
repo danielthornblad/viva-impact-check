@@ -54,7 +54,7 @@ const Login = () => {
       }
 
       const configuredRedirect = import.meta.env.VITE_GOOGLE_REDIRECT_URI?.trim();
-      let loginRedirectUri = `${window.location.origin}${window.location.pathname}`;
+      let loginRedirectUri = window.location.origin;
 
       if (configuredRedirect) {
         try {
@@ -65,6 +65,12 @@ const Login = () => {
           setInitError('Ogiltig VITE_GOOGLE_REDIRECT_URI.');
           return;
         }
+      } else if (window.location.pathname && window.location.pathname !== '/') {
+        const normalizedPath = window.location.pathname.endsWith('/')
+          ? window.location.pathname.slice(0, -1)
+          : window.location.pathname;
+
+        loginRedirectUri = `${window.location.origin}${normalizedPath}`;
       }
 
       window.google.accounts.id.initialize({
