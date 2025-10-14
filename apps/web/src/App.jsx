@@ -54,6 +54,7 @@ const AdAnalyzerUI = ({ header = null }) => {
   const [adType, setAdType] = useState('video');
   const [platform, setPlatform] = useState('');
   const [targetAudience, setTargetAudience] = useState('');
+  const [adObjective, setAdObjective] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -143,6 +144,7 @@ const AdAnalyzerUI = ({ header = null }) => {
       formData.append('file', uploadedFile);
       formData.append('adType', adType);
       formData.append('platform', platform);
+      formData.append('adObjective', adObjective);
       formData.append('targetAudience', targetAudience);
       formData.append('fileName', uploadedFile.name);
       formData.append('fileSize', uploadedFile.size);
@@ -154,6 +156,7 @@ const AdAnalyzerUI = ({ header = null }) => {
           fileName: uploadedFile.name,
           adType,
           platform,
+          adObjective,
           targetAudience
         });
       }
@@ -192,7 +195,7 @@ const AdAnalyzerUI = ({ header = null }) => {
     'Snapchat'
   ];
 
-  const canAnalyze = uploadedFile && platform && targetAudience;
+  const canAnalyze = uploadedFile && platform && targetAudience && adObjective;
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f9fafb' }}>
@@ -226,6 +229,8 @@ const AdAnalyzerUI = ({ header = null }) => {
               />
 
               <ContextForm
+                adObjective={adObjective}
+                setAdObjective={setAdObjective}
                 platform={platform}
                 setPlatform={setPlatform}
                 targetAudience={targetAudience}
@@ -241,6 +246,7 @@ const AdAnalyzerUI = ({ header = null }) => {
                 adType={adType}
                 uploadedFile={uploadedFile}
                 platform={platform}
+                adObjective={adObjective}
                 targetAudience={targetAudience}
               />
             </div>
