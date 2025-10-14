@@ -24,6 +24,14 @@ start the development server from the repo root:
 npm run start:web
 ```
 
+#### Pausa autentisering i dev-läge
+
+Om backendens autentiseringstjänst inte körs lokalt kan du sätta flaggan
+`VITE_AUTH_DEV_PAUSE=true` i `.env`. När flaggan används i kombination med
+Vites `npm run start:web` (som körs i dev-läge) hoppar frontenden över alla
+anrop till auth-API:t, markerar användaren som inloggad med en stubprofil och
+visar en banner som påminner om att autentisering är pausad.
+
 ### Production build
 
 When building or running the application in production, supply the variable in
