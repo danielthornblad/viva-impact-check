@@ -67,6 +67,7 @@ VITE_AUTH_LOGIN_URL=/api/auth/sign-in
 VITE_AUTH_VERIFY_URL=/api/auth/session
 VITE_AUTH_LOGOUT_URL=/api/auth/sign-out
 VITE_ADMIN_ACCOUNTS_URL=/api/admin/accounts
+VITE_AUTH_PAUSE=false # valfri: sätt till true för att pausa auth i alla miljöer
 VITE_AUTH_DEV_PAUSE=false # valfri: sätt till true för att hoppa över auth i dev-läge
 ```
 

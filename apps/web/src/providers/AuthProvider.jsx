@@ -9,6 +9,9 @@ const DEV_STUB_USER = {
   roles: ['admin']
 };
 
+const parseBooleanFlag = (value) =>
+  typeof value === 'string' && ['1', 'true', 'yes', 'on'].includes(value.toLowerCase());
+
 const readStoredToken = () => {
   try {
     return window.localStorage.getItem(STORAGE_KEY);
@@ -40,10 +43,9 @@ export const AuthProvider = ({ children }) => {
   const loginUrl = import.meta.env.VITE_AUTH_LOGIN_URL;
   const logoutUrl = import.meta.env.VITE_AUTH_LOGOUT_URL;
   const devPauseFlag = import.meta.env.VITE_AUTH_DEV_PAUSE;
+  const globalPauseFlag = import.meta.env.VITE_AUTH_PAUSE;
   const isAuthPaused = Boolean(
-    import.meta.env.DEV &&
-      typeof devPauseFlag === 'string' &&
-      ['1', 'true', 'yes', 'on'].includes(devPauseFlag.toLowerCase())
+    (import.meta.env.DEV && parseBooleanFlag(devPauseFlag)) || parseBooleanFlag(globalPauseFlag)
   );
 
   const clearSession = useCallback(() => {
