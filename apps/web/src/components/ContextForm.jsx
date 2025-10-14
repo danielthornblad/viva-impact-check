@@ -56,6 +56,7 @@ const ContextForm = ({
         <option value="upper_funnel">Upper funnel</option>
         <option value="mid_funnel">Mid funnel</option>
         <option value="lower_funnel">Lower funnel</option>
+        <option value="unknown">Vet ej</option>
       </select>
     </div>
 
