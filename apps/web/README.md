@@ -32,6 +32,15 @@ Vites `npm run start:web` (som körs i dev-läge) hoppar frontenden över alla
 anrop till auth-API:t, markerar användaren som inloggad med en stubprofil och
 visar en banner som påminner om att autentisering är pausad.
 
+#### Pausa autentisering i en deployad miljö
+
+För att tillfälligt stänga av inloggningen i en miljö som byggs med `npm run
+build:web` kan du sätta miljövariabeln `VITE_AUTH_PAUSE=true` i den miljön.
+När flaggan är aktiv loggar frontenden automatiskt in en stubbanvändare,
+hoppar över alla anrop till autentiserings-API:t och visar bannern "Autentisering
+är pausad". Detta kan användas för att tillfälligt pausa åtkomst medan backend
+underhålls utan att behöva göra en kodförändring.
+
 ### Production build
 
 When building or running the application in production, supply the variable in

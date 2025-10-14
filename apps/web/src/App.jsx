@@ -298,7 +298,8 @@ const App = () => {
 
   const pausedBanner = isAuthPaused ? (
     <div className="auth-paused-banner">
-      Autentisering är pausad i dev-läge. Backend-anrop kring inloggning hoppar över verifiering.
+      Autentisering är pausad. Backend-anrop kring inloggning hoppar över verifiering tills läget
+      avaktiveras.
     </div>
   ) : null;
 
