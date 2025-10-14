@@ -2,6 +2,12 @@ import React, { createContext, useCallback, useContext, useEffect, useMemo, useR
 
 const AuthContext = createContext(null);
 const STORAGE_KEY = 'viva-auth-token';
+const DEV_STUB_TOKEN = 'dev-auth-paused';
+const DEV_STUB_USER = {
+  email: 'auth-paused@example.com',
+  name: 'Autentisering pausad',
+  roles: ['admin']
+};
 
 const readStoredToken = () => {
   try {
@@ -33,15 +39,38 @@ export const AuthProvider = ({ children }) => {
   const verifyUrl = import.meta.env.VITE_AUTH_VERIFY_URL;
   const loginUrl = import.meta.env.VITE_AUTH_LOGIN_URL;
   const logoutUrl = import.meta.env.VITE_AUTH_LOGOUT_URL;
+  const devPauseFlag = import.meta.env.VITE_AUTH_DEV_PAUSE;
+  const isAuthPaused = Boolean(
+    import.meta.env.DEV &&
+      typeof devPauseFlag === 'string' &&
+      ['1', 'true', 'yes', 'on'].includes(devPauseFlag.toLowerCase())
+  );
 
   const clearSession = useCallback(() => {
+    if (isAuthPaused) {
+      writeStoredToken(DEV_STUB_TOKEN);
+      setToken(DEV_STUB_TOKEN);
+      setUser(DEV_STUB_USER);
+      return;
+    }
+
     writeStoredToken(null);
     setToken(null);
     setUser(null);
-  }, []);
+  }, [isAuthPaused]);
 
   const verifyToken = useCallback(
     async (tokenToVerify, { skipLoadingUpdate = false } = {}) => {
+      if (isAuthPaused) {
+        writeStoredToken(DEV_STUB_TOKEN);
+        setToken(DEV_STUB_TOKEN);
+        setUser(DEV_STUB_USER);
+        if (!skipLoadingUpdate) {
+          setIsLoading(false);
+        }
+        return DEV_STUB_USER;
+      }
+
       if (!tokenToVerify) {
         clearSession();
         if (!skipLoadingUpdate) {
@@ -96,11 +125,19 @@ export const AuthProvider = ({ children }) => {
         }
       }
     },
-    [clearSession, verifyUrl]
+    [clearSession, isAuthPaused, verifyUrl]
   );
 
   useEffect(() => {
     const bootstrapSession = async () => {
+      if (isAuthPaused) {
+        writeStoredToken(DEV_STUB_TOKEN);
+        setToken(DEV_STUB_TOKEN);
+        setUser(DEV_STUB_USER);
+        setIsLoading(false);
+        return;
+      }
+
       const storedToken = readStoredToken();
       if (!storedToken) {
         setIsLoading(false);
@@ -125,6 +162,14 @@ export const AuthProvider = ({ children }) => {
 
   const signInWithGoogle = useCallback(
     async (credential) => {
+      if (isAuthPaused) {
+        writeStoredToken(DEV_STUB_TOKEN);
+        setToken(DEV_STUB_TOKEN);
+        setUser(DEV_STUB_USER);
+        setIsLoading(false);
+        return;
+      }
+
       if (!credential) {
         return;
       }
@@ -170,11 +215,18 @@ export const AuthProvider = ({ children }) => {
         setIsLoading(false);
       }
     },
-    [clearSession, loginUrl, verifyToken, verifyUrl]
+    [clearSession, isAuthPaused, loginUrl, verifyToken, verifyUrl]
   );
 
   const signOut = useCallback(async () => {
     setIsLoading(true);
+
+    if (isAuthPaused) {
+      clearSession();
+      setIsLoading(false);
+      return;
+    }
+
     const currentToken = token;
     try {
       clearSession();
@@ -199,19 +251,20 @@ export const AuthProvider = ({ children }) => {
     } finally {
       setIsLoading(false);
     }
-  }, [clearSession, logoutUrl, token]);
+  }, [clearSession, isAuthPaused, logoutUrl, token]);
 
   const contextValue = useMemo(
     () => ({
       token,
       user,
-      isAuthenticated: Boolean(token),
+      isAuthenticated: Boolean(token) || isAuthPaused,
       isLoading,
+      isAuthPaused,
       signInWithGoogle,
       signOut,
       verifyToken
     }),
-    [isLoading, signInWithGoogle, signOut, token, user, verifyToken]
+    [isAuthPaused, isLoading, signInWithGoogle, signOut, token, user, verifyToken]
   );
 
   return <AuthContext.Provider value={contextValue}>{children}</AuthContext.Provider>;

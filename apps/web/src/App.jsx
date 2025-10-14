@@ -258,7 +258,7 @@ const AdAnalyzerUI = ({ header = null }) => {
 };
 
 const App = () => {
-  const { isAuthenticated, isLoading, user } = useAuth();
+  const { isAuthenticated, isLoading, isAuthPaused, user } = useAuth();
   const [activeView, setActiveView] = useState('app');
 
   const canAccessAdmin = Array.isArray(user?.roles) && user.roles.includes('admin');
@@ -284,7 +284,7 @@ const App = () => {
     return <div className="app-loading-state">Verifierar Google-session...</div>;
   }
 
-  if (!isAuthenticated) {
+  if (!isAuthenticated && !isAuthPaused) {
     return <Login />;
   }
 
@@ -296,11 +296,27 @@ const App = () => {
     />
   );
 
+  const pausedBanner = isAuthPaused ? (
+    <div className="auth-paused-banner">
+      Autentisering är pausad i dev-läge. Backend-anrop kring inloggning hoppar över verifiering.
+    </div>
+  ) : null;
+
   if (activeView === 'admin') {
-    return <AdminUsers header={header} onNavigate={handleNavigate} />;
+    return (
+      <>
+        {pausedBanner}
+        <AdminUsers header={header} onNavigate={handleNavigate} />
+      </>
+    );
   }
 
-  return <AdAnalyzerUI header={header} />;
+  return (
+    <>
+      {pausedBanner}
+      <AdAnalyzerUI header={header} />
+    </>
+  );
 };
 
 export default App;
