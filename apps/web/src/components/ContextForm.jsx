@@ -20,7 +20,13 @@ const ContextForm = ({
       </p>
     </div>
 
-    <div style={{ marginBottom: '24px' }}>
+    <div
+      style={{
+        marginBottom: '24px',
+        width: '100%',
+        maxWidth: 'calc((100% - 24px) / 2)'
+      }}
+    >
       <label
         htmlFor="ad-objective"
         style={{
