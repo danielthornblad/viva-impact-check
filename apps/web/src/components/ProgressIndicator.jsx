@@ -1,6 +1,6 @@
 import React from 'react';
 
-const ProgressIndicator = ({ adType, uploadedFile, platform, targetAudience }) => (
+const ProgressIndicator = ({ adType, uploadedFile, platform, adObjective, targetAudience }) => (
   <div style={{ display: 'flex', justifyContent: 'center' }}>
     <div style={{ display: 'flex', alignItems: 'center', gap: '16px' }}>
       <div style={{
@@ -19,7 +19,7 @@ const ProgressIndicator = ({ adType, uploadedFile, platform, targetAudience }) =
         width: '12px',
         height: '12px',
         borderRadius: '50%',
-        backgroundColor: (platform && targetAudience) ? '#CAE780' : '#d1d5db'
+        backgroundColor: (platform && adObjective && targetAudience) ? '#CAE780' : '#d1d5db'
       }} />
     </div>
   </div>
