@@ -29,6 +29,7 @@ const ContextForm = ({
     padding: '12px 16px',
     border: '1px solid #d1d5db',
     borderRadius: '12px',
+    fontFamily: "'DM Sans', sans-serif",
     fontSize: '16px',
     boxSizing: 'border-box'
   };
