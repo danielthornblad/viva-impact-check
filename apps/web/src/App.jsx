@@ -55,6 +55,9 @@ const AdAnalyzerUI = ({ header = null }) => {
   const [platform, setPlatform] = useState('');
   const [targetAudience, setTargetAudience] = useState('');
   const [adObjective, setAdObjective] = useState('');
+  const [isContextModeOn, setIsContextModeOn] = useState(false);
+  const [ctaText, setCtaText] = useState('');
+  const [postText, setPostText] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -146,6 +149,11 @@ const AdAnalyzerUI = ({ header = null }) => {
       formData.append('platform', platform);
       formData.append('adObjective', adObjective);
       formData.append('targetAudience', targetAudience);
+      formData.append('isContextModeOn', isContextModeOn ? 'true' : 'false');
+      if (isContextModeOn) {
+        formData.append('ctaText', ctaText);
+        formData.append('postText', postText);
+      }
       formData.append('fileName', uploadedFile.name);
       formData.append('fileSize', uploadedFile.size);
       formData.append('fileType', uploadedFile.type);
@@ -157,7 +165,10 @@ const AdAnalyzerUI = ({ header = null }) => {
           adType,
           platform,
           adObjective,
-          targetAudience
+          targetAudience,
+          isContextModeOn,
+          ctaText: isContextModeOn ? ctaText : undefined,
+          postText: isContextModeOn ? postText : undefined
         });
       }
 
@@ -231,6 +242,12 @@ const AdAnalyzerUI = ({ header = null }) => {
               <ContextForm
                 adObjective={adObjective}
                 setAdObjective={setAdObjective}
+                isContextModeOn={isContextModeOn}
+                setIsContextModeOn={setIsContextModeOn}
+                ctaText={ctaText}
+                setCtaText={setCtaText}
+                postText={postText}
+                setPostText={setPostText}
                 platform={platform}
                 setPlatform={setPlatform}
                 targetAudience={targetAudience}

@@ -4,127 +4,250 @@ import { sectionStyle, headingStyle } from '../styles/commonStyles';
 const ContextForm = ({
   adObjective,
   setAdObjective,
+  isContextModeOn,
+  setIsContextModeOn,
+  ctaText,
+  setCtaText,
+  postText,
+  setPostText,
   platform,
   setPlatform,
   targetAudience,
   setTargetAudience,
   platforms
-}) => (
-  <div style={{ ...sectionStyle, marginBottom: '32px' }}>
-    <div style={{ marginBottom: '24px' }}>
-      <h2 style={headingStyle}>Steg 3: Kontext för analysen</h2>
-      <p style={{
-        color: '#6b7280',
-      }}>
-        Berätta mer om din annons för bättre analys
-      </p>
-    </div>
+}) => {
+  const sharedLabelStyle = {
+    display: 'block',
+    fontSize: '14px',
+    fontWeight: '500',
+    color: '#1f2937',
+    marginBottom: '12px'
+  };
 
-    <div
-      style={{
-        marginBottom: '24px',
-        width: '100%',
-        maxWidth: 'calc((100% - 24px) / 2)'
-      }}
-    >
-      <label
-        htmlFor="ad-objective"
-        style={{
-          display: 'block',
-          fontSize: '14px',
-          fontWeight: '500',
-          color: '#1f2937',
-          marginBottom: '12px',
-        }}
-      >
-        Syftet med annonsen
-      </label>
-      <select
-        id="ad-objective"
-        value={adObjective}
-        onChange={(e) => setAdObjective(e.target.value)}
-        style={{
-          width: '100%',
-          padding: '12px 16px',
-          border: '1px solid #d1d5db',
-          borderRadius: '12px',
-          fontSize: '16px',
-          boxSizing: 'border-box'
-        }}
-      >
-        <option value="">Välj syfte</option>
-        <option value="upper_funnel">Upper funnel</option>
-        <option value="mid_funnel">Mid funnel</option>
-        <option value="lower_funnel">Lower funnel</option>
-        <option value="unknown">Vet ej</option>
-      </select>
-    </div>
+  const sharedInputStyle = {
+    width: '100%',
+    padding: '12px 16px',
+    border: '1px solid #d1d5db',
+    borderRadius: '12px',
+    fontFamily: "'DM Sans', sans-serif",
+    fontSize: '16px',
+    boxSizing: 'border-box'
+  };
 
-    <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
-      <div>
-        <label
-          htmlFor="platform-select"
-          style={{
-            display: 'block',
-            fontSize: '14px',
-            fontWeight: '500',
-            color: '#1f2937',
-            marginBottom: '12px',
-          }}
-        >
-          Plattform
-        </label>
-        <select
-          id="platform-select"
-          value={platform}
-          onChange={(e) => setPlatform(e.target.value)}
-          style={{
-            width: '100%',
-            padding: '12px 16px',
-            border: '1px solid #d1d5db',
-            borderRadius: '12px',
-            fontSize: '16px',
-            boxSizing: 'border-box'
-          }}
-        >
-          <option value="">Välj plattform</option>
-          {platforms.map((p) => (
-            <option key={p} value={p}>{p}</option>
-          ))}
-        </select>
+  const getContextFieldStyle = () => ({
+    ...sharedInputStyle,
+    backgroundColor: isContextModeOn ? '#ffffff' : '#f3f4f6',
+    color: isContextModeOn ? '#1f2937' : '#9ca3af',
+    cursor: isContextModeOn ? 'text' : 'not-allowed'
+  });
+
+  const getToggleButtonStyle = (active) => ({
+    flex: 1,
+    padding: '12px 24px',
+    borderRadius: '9999px',
+    border: 'none',
+    backgroundColor: active ? '#CAE780' : 'transparent',
+    color: active ? '#1f2937' : '#6b7280',
+    fontSize: '14px',
+    fontWeight: '500',
+    cursor: 'pointer',
+    transition: 'all 0.2s ease'
+  });
+
+  return (
+    <div style={{ ...sectionStyle, marginBottom: '32px' }}>
+      <div style={{ marginBottom: '24px' }}>
+        <h2 style={headingStyle}>Steg 3: Kontext för analysen</h2>
+        <p style={{
+          color: '#6b7280'
+        }}>
+          Berätta mer om din annons för bättre analys
+        </p>
       </div>
 
-      <div>
-        <label
-          htmlFor="target-audience"
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '24px',
+          marginBottom: '24px'
+        }}
+      >
+        <div
           style={{
-            display: 'block',
-            fontSize: '14px',
-            fontWeight: '500',
-            color: '#1f2937',
-            marginBottom: '12px',
+            flex: '1 1 320px',
+            minWidth: '260px'
           }}
         >
-          Målgrupp
-        </label>
-        <input
-          type="text"
-          id="target-audience"
-          value={targetAudience}
-          onChange={(e) => setTargetAudience(e.target.value)}
-          placeholder="t.ex. Kvinnor 25-35, intresserade av fitness"
+          <label
+            htmlFor="ad-objective"
+            style={sharedLabelStyle}
+          >
+            Syftet med annonsen
+          </label>
+          <select
+            id="ad-objective"
+            value={adObjective}
+            onChange={(e) => setAdObjective(e.target.value)}
+            style={sharedInputStyle}
+          >
+            <option value="">Välj syfte</option>
+            <option value="upper_funnel">Upper funnel</option>
+            <option value="mid_funnel">Mid funnel</option>
+            <option value="lower_funnel">Lower funnel</option>
+            <option value="unknown">Vet ej</option>
+          </select>
+        </div>
+
+        <div
           style={{
-            width: '100%',
-            padding: '12px 16px',
-            border: '1px solid #d1d5db',
-            borderRadius: '12px',
-            fontSize: '16px',
-            boxSizing: 'border-box'
+            flex: '1 1 320px',
+            minWidth: '260px'
           }}
-        />
+        >
+          <span style={sharedLabelStyle}>Kontextläge</span>
+          <div
+            style={{
+              display: 'flex',
+              backgroundColor: '#f3f4f6',
+              borderRadius: '9999px',
+              padding: '4px',
+              width: 'fit-content'
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setIsContextModeOn(false)}
+              style={getToggleButtonStyle(!isContextModeOn)}
+            >
+              Av
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsContextModeOn(true)}
+              style={getToggleButtonStyle(isContextModeOn)}
+            >
+              På
+            </button>
+          </div>
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '24px',
+          marginBottom: '24px'
+        }}
+      >
+        <div
+          style={{
+            flex: '1 1 320px',
+            minWidth: '260px'
+          }}
+        >
+          <label
+            htmlFor="cta-text"
+            style={sharedLabelStyle}
+          >
+            CTA
+          </label>
+          <input
+            type="text"
+            id="cta-text"
+            value={ctaText}
+            onChange={(e) => setCtaText(e.target.value)}
+            placeholder="t.ex. Boka demo, Läs mer"
+            disabled={!isContextModeOn}
+            style={getContextFieldStyle()}
+          />
+        </div>
+
+        <div
+          style={{
+            flex: '1 1 320px',
+            minWidth: '260px'
+          }}
+        >
+          <label
+            htmlFor="post-text"
+            style={sharedLabelStyle}
+          >
+            Inläggstext
+          </label>
+          <textarea
+            id="post-text"
+            value={postText}
+            onChange={(e) => setPostText(e.target.value)}
+            placeholder="Skriv inläggstexten här"
+            disabled={!isContextModeOn}
+            rows={4}
+            style={{
+              ...getContextFieldStyle(),
+              resize: 'vertical',
+              minHeight: '120px'
+            }}
+          />
+        </div>
+      </div>
+
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '24px'
+        }}
+      >
+        <div
+          style={{
+            flex: '1 1 320px',
+            minWidth: '260px'
+          }}
+        >
+          <label
+            htmlFor="platform-select"
+            style={sharedLabelStyle}
+          >
+            Plattform
+          </label>
+          <select
+            id="platform-select"
+            value={platform}
+            onChange={(e) => setPlatform(e.target.value)}
+            style={sharedInputStyle}
+          >
+            <option value="">Välj plattform</option>
+            {platforms.map((p) => (
+              <option key={p} value={p}>{p}</option>
+            ))}
+          </select>
+        </div>
+
+        <div
+          style={{
+            flex: '1 1 320px',
+            minWidth: '260px'
+          }}
+        >
+          <label
+            htmlFor="target-audience"
+            style={sharedLabelStyle}
+          >
+            Målgrupp
+          </label>
+          <input
+            type="text"
+            id="target-audience"
+            value={targetAudience}
+            onChange={(e) => setTargetAudience(e.target.value)}
+            placeholder="t.ex. Kvinnor 25-35, intresserade av fitness"
+            style={sharedInputStyle}
+          />
+        </div>
       </div>
     </div>
-  </div>
-);
+  );
+};
 
 export default ContextForm;
