@@ -56,6 +56,8 @@ const AdAnalyzerUI = ({ header = null }) => {
   const [targetAudience, setTargetAudience] = useState('');
   const [adObjective, setAdObjective] = useState('');
   const [isContextModeOn, setIsContextModeOn] = useState(false);
+  const [includeCta, setIncludeCta] = useState(true);
+  const [includePostText, setIncludePostText] = useState(true);
   const [ctaText, setCtaText] = useState('');
   const [postText, setPostText] = useState('');
   const [dragActive, setDragActive] = useState(false);
@@ -151,8 +153,14 @@ const AdAnalyzerUI = ({ header = null }) => {
       formData.append('targetAudience', targetAudience);
       formData.append('isContextModeOn', isContextModeOn ? 'true' : 'false');
       if (isContextModeOn) {
-        formData.append('ctaText', ctaText);
-        formData.append('postText', postText);
+        formData.append('includeCta', includeCta ? 'true' : 'false');
+        formData.append('includePostText', includePostText ? 'true' : 'false');
+        if (includeCta) {
+          formData.append('ctaText', ctaText);
+        }
+        if (includePostText) {
+          formData.append('postText', postText);
+        }
       }
       formData.append('fileName', uploadedFile.name);
       formData.append('fileSize', uploadedFile.size);
@@ -167,8 +175,10 @@ const AdAnalyzerUI = ({ header = null }) => {
           adObjective,
           targetAudience,
           isContextModeOn,
-          ctaText: isContextModeOn ? ctaText : undefined,
-          postText: isContextModeOn ? postText : undefined
+          includeCta: isContextModeOn ? includeCta : undefined,
+          includePostText: isContextModeOn ? includePostText : undefined,
+          ctaText: isContextModeOn && includeCta ? ctaText : undefined,
+          postText: isContextModeOn && includePostText ? postText : undefined
         });
       }
 
@@ -244,6 +254,10 @@ const AdAnalyzerUI = ({ header = null }) => {
                 setAdObjective={setAdObjective}
                 isContextModeOn={isContextModeOn}
                 setIsContextModeOn={setIsContextModeOn}
+                includeCta={includeCta}
+                setIncludeCta={setIncludeCta}
+                includePostText={includePostText}
+                setIncludePostText={setIncludePostText}
                 ctaText={ctaText}
                 setCtaText={setCtaText}
                 postText={postText}
