@@ -55,6 +55,9 @@ const AdAnalyzerUI = ({ header = null }) => {
   const [platform, setPlatform] = useState('');
   const [targetAudience, setTargetAudience] = useState('');
   const [adObjective, setAdObjective] = useState('');
+  const [isContextModeOn, setIsContextModeOn] = useState(false);
+  const [ctaText, setCtaText] = useState('');
+  const [postText, setPostText] = useState('');
   const [dragActive, setDragActive] = useState(false);
   const [uploadedFile, setUploadedFile] = useState(null);
   const [analyzing, setAnalyzing] = useState(false);
@@ -231,6 +234,12 @@ const AdAnalyzerUI = ({ header = null }) => {
               <ContextForm
                 adObjective={adObjective}
                 setAdObjective={setAdObjective}
+                isContextModeOn={isContextModeOn}
+                setIsContextModeOn={setIsContextModeOn}
+                ctaText={ctaText}
+                setCtaText={setCtaText}
+                postText={postText}
+                setPostText={setPostText}
                 platform={platform}
                 setPlatform={setPlatform}
                 targetAudience={targetAudience}
