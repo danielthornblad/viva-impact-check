@@ -211,7 +211,11 @@ const AdAnalyzerUI = ({ header = null }) => {
     'Snapchat'
   ];
 
-  const canAnalyze = uploadedFile && platform && targetAudience && adObjective;
+  const isBaseFormComplete = uploadedFile && platform && targetAudience && adObjective;
+  const isContextComplete = !isContextModeOn || (
+    ctaText?.trim() && (!includePostText || postText?.trim())
+  );
+  const canAnalyze = isBaseFormComplete && Boolean(isContextComplete);
 
   return (
     <div style={{ minHeight: '100vh', display: 'flex', flexDirection: 'column', backgroundColor: '#f9fafb' }}>
