@@ -41,6 +41,7 @@ const ContextForm = ({
   });
 
   const getToggleButtonStyle = (active) => ({
+    flex: 1,
     padding: '8px 16px',
     borderRadius: '9999px',
     border: '1px solid',
@@ -66,97 +67,115 @@ const ContextForm = ({
 
       <div
         style={{
-          marginBottom: '24px',
-          width: '100%',
-          maxWidth: 'calc((100% - 24px) / 2)'
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '24px',
+          marginBottom: '24px'
         }}
       >
         <div
           style={{
-            display: 'flex',
-            alignItems: 'flex-end',
-            justifyContent: 'space-between',
-            gap: '16px',
-            marginBottom: '12px'
+            flex: '1 1 320px',
+            minWidth: '260px',
+            maxWidth: '480px'
           }}
         >
           <label
             htmlFor="ad-objective"
-            style={{ ...sharedLabelStyle, marginBottom: 0 }}
+            style={sharedLabelStyle}
           >
             Syftet med annonsen
           </label>
-          <div style={{ display: 'flex', alignItems: 'center', gap: '12px' }}>
-            <span style={{ fontSize: '14px', fontWeight: '500', color: '#1f2937' }}>Kontextläge</span>
-            <div style={{ display: 'flex', gap: '8px' }}>
-              <button
-                type="button"
-                onClick={() => setIsContextModeOn(false)}
-                style={getToggleButtonStyle(!isContextModeOn)}
-              >
-                Av
-              </button>
-              <button
-                type="button"
-                onClick={() => setIsContextModeOn(true)}
-                style={getToggleButtonStyle(isContextModeOn)}
-              >
-                På
-              </button>
-            </div>
+          <select
+            id="ad-objective"
+            value={adObjective}
+            onChange={(e) => setAdObjective(e.target.value)}
+            style={sharedInputStyle}
+          >
+            <option value="">Välj syfte</option>
+            <option value="upper_funnel">Upper funnel</option>
+            <option value="mid_funnel">Mid funnel</option>
+            <option value="lower_funnel">Lower funnel</option>
+            <option value="unknown">Vet ej</option>
+          </select>
+        </div>
+
+        <div
+          style={{
+            flex: '0 1 220px',
+            minWidth: '200px',
+            display: 'flex',
+            flexDirection: 'column',
+            gap: '12px',
+            alignSelf: 'stretch'
+          }}
+        >
+          <span style={{ fontSize: '14px', fontWeight: '500', color: '#1f2937' }}>Kontextläge</span>
+          <div
+            style={{
+              display: 'flex',
+              gap: '12px',
+              padding: '12px',
+              border: '1px solid #e5e7eb',
+              borderRadius: '12px',
+              backgroundColor: '#f9fafb'
+            }}
+          >
+            <button
+              type="button"
+              onClick={() => setIsContextModeOn(false)}
+              style={getToggleButtonStyle(!isContextModeOn)}
+            >
+              Av
+            </button>
+            <button
+              type="button"
+              onClick={() => setIsContextModeOn(true)}
+              style={getToggleButtonStyle(isContextModeOn)}
+            >
+              På
+            </button>
           </div>
         </div>
-        <select
-          id="ad-objective"
-          value={adObjective}
-          onChange={(e) => setAdObjective(e.target.value)}
-          style={sharedInputStyle}
+      </div>
+
+      <div style={{ marginBottom: '24px' }}>
+        <label
+          htmlFor="cta-text"
+          style={sharedLabelStyle}
         >
-          <option value="">Välj syfte</option>
-          <option value="upper_funnel">Upper funnel</option>
-          <option value="mid_funnel">Mid funnel</option>
-          <option value="lower_funnel">Lower funnel</option>
-          <option value="unknown">Vet ej</option>
-        </select>
+          CTA
+        </label>
+        <input
+          type="text"
+          id="cta-text"
+          value={ctaText}
+          onChange={(e) => setCtaText(e.target.value)}
+          placeholder="t.ex. Boka demo, Läs mer"
+          disabled={!isContextModeOn}
+          style={getContextFieldStyle()}
+        />
+      </div>
 
-        <div style={{ marginTop: '16px' }}>
-          <label
-            htmlFor="cta-text"
-            style={sharedLabelStyle}
-          >
-            CTA
-          </label>
-          <input
-            type="text"
-            id="cta-text"
-            value={ctaText}
-            onChange={(e) => setCtaText(e.target.value)}
-            placeholder="t.ex. Boka demo, Läs mer"
-            disabled={!isContextModeOn}
-            style={getContextFieldStyle()}
-          />
-        </div>
-
-        <div style={{ marginTop: '16px' }}>
-          <label
-            htmlFor="post-text"
-            style={sharedLabelStyle}
-          >
-            Inläggstext
-          </label>
-          <textarea
-            id="post-text"
-            value={postText}
-            onChange={(e) => setPostText(e.target.value)}
-            placeholder="Skriv inläggstexten här"
-            disabled={!isContextModeOn}
-            rows={4}
-            style={{
-              ...getContextFieldStyle(),
-              resize: 'vertical'
-            }}
-          />
-        </div>
+      <div style={{ marginTop: '16px' }}>
+        <label
+          htmlFor="post-text"
+          style={sharedLabelStyle}
+        >
+          Inläggstext
+        </label>
+        <textarea
+          id="post-text"
+          value={postText}
+          onChange={(e) => setPostText(e.target.value)}
+          placeholder="Skriv inläggstexten här"
+          disabled={!isContextModeOn}
+          rows={4}
+          style={{
+            ...getContextFieldStyle(),
+            resize: 'vertical'
+          }}
+        />
       </div>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
