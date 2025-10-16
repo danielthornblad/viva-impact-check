@@ -6,8 +6,6 @@ const ContextForm = ({
   setAdObjective,
   isContextModeOn,
   setIsContextModeOn,
-  includeCta,
-  setIncludeCta,
   includePostText,
   setIncludePostText,
   ctaText,
@@ -41,16 +39,8 @@ const ContextForm = ({
   const getContextFieldStyle = (isEnabled) => ({
     ...sharedInputStyle,
     backgroundColor: isEnabled ? '#ffffff' : '#f3f4f6',
-    color: isEnabled ? '#1f2937' : '#9ca3af',
+    color: '#1f2937',
     cursor: isEnabled ? 'text' : 'not-allowed'
-  });
-
-  const getContextLabelStyle = (isEnabled = isContextModeOn) => ({
-    ...sharedLabelStyle,
-    display: 'flex',
-    alignItems: 'center',
-    gap: '12px',
-    color: isEnabled ? '#1f2937' : '#9ca3af'
   });
 
   const getToggleButtonStyle = (active) => ({
@@ -76,11 +66,10 @@ const ContextForm = ({
   const contextCardStyle = {
     borderRadius: '20px',
     padding: '24px',
-    backgroundColor: isContextModeOn ? '#f9fafb' : '#f3f4f6',
+    backgroundColor: '#f9fafb',
     display: 'flex',
     flexDirection: 'column',
-    gap: '20px',
-    transition: 'background-color 0.2s ease, border-color 0.2s ease'
+    gap: '20px'
   };
 
   const contextToggleGroupStyle = {
@@ -178,10 +167,10 @@ const ContextForm = ({
           }}
         >
           <div>
-            <span style={getContextLabelStyle()}>Kontextläge</span>
+            <span style={sharedLabelStyle}>Kontextläge</span>
             <p style={{
               fontSize: '14px',
-              color: isContextModeOn ? '#6b7280' : '#9ca3af',
+              color: '#6b7280',
               margin: 0
             }}>
               Aktivera för att beskriva CTA och inläggstext från plattformen
@@ -200,7 +189,6 @@ const ContextForm = ({
               type="button"
               onClick={() => {
                 if (!isContextModeOn) {
-                  setIncludeCta(true);
                   setIncludePostText(true);
                 }
                 setIsContextModeOn(true);
@@ -214,47 +202,23 @@ const ContextForm = ({
 
         <div style={contextFieldsGridStyle}>
           <div>
-            <div
+            <label
+              htmlFor="cta-text"
               style={{
-                display: 'flex',
-                alignItems: 'center',
-                justifyContent: isContextModeOn ? 'space-between' : 'flex-start',
+                ...sharedLabelStyle,
                 marginBottom: '12px'
               }}
             >
-              <label
-                htmlFor="cta-text"
-                style={{
-                  ...getContextLabelStyle(isContextModeOn && includeCta),
-                  marginBottom: 0
-                }}
-              >
-                CTA
-              </label>
-              {isContextModeOn && (
-                <input
-                  type="checkbox"
-                  id="cta-enabled"
-                  checked={includeCta}
-                  onChange={(event) => setIncludeCta(event.target.checked)}
-                  aria-label="Inkludera CTA"
-                  style={{
-                    width: '20px',
-                    height: '20px',
-                    accentColor: '#89C235',
-                    cursor: 'pointer'
-                  }}
-                />
-              )}
-            </div>
+              CTA
+            </label>
             <input
               type="text"
               id="cta-text"
               value={ctaText}
               onChange={(e) => setCtaText(e.target.value)}
               placeholder="t.ex. Boka demo, Läs mer"
-              disabled={!isContextModeOn || !includeCta}
-              style={getContextFieldStyle(isContextModeOn && includeCta)}
+              disabled={!isContextModeOn}
+              style={getContextFieldStyle(isContextModeOn)}
             />
           </div>
 
@@ -270,7 +234,7 @@ const ContextForm = ({
               <label
                 htmlFor="post-text"
                 style={{
-                  ...getContextLabelStyle(isContextModeOn && includePostText),
+                  ...sharedLabelStyle,
                   marginBottom: 0
                 }}
               >
