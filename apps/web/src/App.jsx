@@ -149,6 +149,11 @@ const AdAnalyzerUI = ({ header = null }) => {
       formData.append('platform', platform);
       formData.append('adObjective', adObjective);
       formData.append('targetAudience', targetAudience);
+      formData.append('isContextModeOn', isContextModeOn ? 'true' : 'false');
+      if (isContextModeOn) {
+        formData.append('ctaText', ctaText);
+        formData.append('postText', postText);
+      }
       formData.append('fileName', uploadedFile.name);
       formData.append('fileSize', uploadedFile.size);
       formData.append('fileType', uploadedFile.type);
@@ -160,7 +165,10 @@ const AdAnalyzerUI = ({ header = null }) => {
           adType,
           platform,
           adObjective,
-          targetAudience
+          targetAudience,
+          isContextModeOn,
+          ctaText: isContextModeOn ? ctaText : undefined,
+          postText: isContextModeOn ? postText : undefined
         });
       }
 
