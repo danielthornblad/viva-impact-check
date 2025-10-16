@@ -42,12 +42,11 @@ const ContextForm = ({
 
   const getToggleButtonStyle = (active) => ({
     flex: 1,
-    padding: '8px 16px',
+    padding: '12px 24px',
     borderRadius: '9999px',
-    border: '1px solid',
-    borderColor: active ? '#2563eb' : '#d1d5db',
-    backgroundColor: active ? '#2563eb' : '#ffffff',
-    color: active ? '#ffffff' : '#1f2937',
+    border: 'none',
+    backgroundColor: active ? '#CAE780' : 'transparent',
+    color: active ? '#1f2937' : '#6b7280',
     fontSize: '14px',
     fontWeight: '500',
     cursor: 'pointer',
@@ -76,8 +75,7 @@ const ContextForm = ({
         <div
           style={{
             flex: '1 1 320px',
-            minWidth: '260px',
-            maxWidth: '480px'
+            minWidth: '260px'
           }}
         >
           <label
@@ -102,23 +100,18 @@ const ContextForm = ({
 
         <div
           style={{
-            flex: '0 1 220px',
-            minWidth: '200px',
-            display: 'flex',
-            flexDirection: 'column',
-            gap: '12px',
-            alignSelf: 'stretch'
+            flex: '1 1 320px',
+            minWidth: '260px'
           }}
         >
-          <span style={{ fontSize: '14px', fontWeight: '500', color: '#1f2937' }}>Kontextläge</span>
+          <span style={sharedLabelStyle}>Kontextläge</span>
           <div
             style={{
               display: 'flex',
-              gap: '12px',
-              padding: '12px',
-              border: '1px solid #e5e7eb',
-              borderRadius: '12px',
-              backgroundColor: '#f9fafb'
+              backgroundColor: '#f3f4f6',
+              borderRadius: '9999px',
+              padding: '4px',
+              width: 'fit-content'
             }}
           >
             <button
@@ -139,47 +132,78 @@ const ContextForm = ({
         </div>
       </div>
 
-      <div style={{ marginBottom: '24px' }}>
-        <label
-          htmlFor="cta-text"
-          style={sharedLabelStyle}
-        >
-          CTA
-        </label>
-        <input
-          type="text"
-          id="cta-text"
-          value={ctaText}
-          onChange={(e) => setCtaText(e.target.value)}
-          placeholder="t.ex. Boka demo, Läs mer"
-          disabled={!isContextModeOn}
-          style={getContextFieldStyle()}
-        />
-      </div>
-
-      <div style={{ marginTop: '16px' }}>
-        <label
-          htmlFor="post-text"
-          style={sharedLabelStyle}
-        >
-          Inläggstext
-        </label>
-        <textarea
-          id="post-text"
-          value={postText}
-          onChange={(e) => setPostText(e.target.value)}
-          placeholder="Skriv inläggstexten här"
-          disabled={!isContextModeOn}
-          rows={4}
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '24px',
+          marginBottom: '24px'
+        }}
+      >
+        <div
           style={{
-            ...getContextFieldStyle(),
-            resize: 'vertical'
+            flex: '1 1 320px',
+            minWidth: '260px'
           }}
-        />
+        >
+          <label
+            htmlFor="cta-text"
+            style={sharedLabelStyle}
+          >
+            CTA
+          </label>
+          <input
+            type="text"
+            id="cta-text"
+            value={ctaText}
+            onChange={(e) => setCtaText(e.target.value)}
+            placeholder="t.ex. Boka demo, Läs mer"
+            disabled={!isContextModeOn}
+            style={getContextFieldStyle()}
+          />
+        </div>
+
+        <div
+          style={{
+            flex: '1 1 320px',
+            minWidth: '260px'
+          }}
+        >
+          <label
+            htmlFor="post-text"
+            style={sharedLabelStyle}
+          >
+            Inläggstext
+          </label>
+          <textarea
+            id="post-text"
+            value={postText}
+            onChange={(e) => setPostText(e.target.value)}
+            placeholder="Skriv inläggstexten här"
+            disabled={!isContextModeOn}
+            rows={4}
+            style={{
+              ...getContextFieldStyle(),
+              resize: 'vertical',
+              minHeight: '120px'
+            }}
+          />
+        </div>
       </div>
 
-      <div style={{ display: 'grid', gridTemplateColumns: 'repeat(2, 1fr)', gap: '24px' }}>
-        <div>
+      <div
+        style={{
+          display: 'flex',
+          flexWrap: 'wrap',
+          gap: '24px'
+        }}
+      >
+        <div
+          style={{
+            flex: '1 1 320px',
+            minWidth: '260px'
+          }}
+        >
           <label
             htmlFor="platform-select"
             style={sharedLabelStyle}
@@ -199,7 +223,12 @@ const ContextForm = ({
           </select>
         </div>
 
-        <div>
+        <div
+          style={{
+            flex: '1 1 320px',
+            minWidth: '260px'
+          }}
+        >
           <label
             htmlFor="target-audience"
             style={sharedLabelStyle}
