@@ -6,6 +6,8 @@ const ContextForm = ({
   setAdObjective,
   isContextModeOn,
   setIsContextModeOn,
+  includePostText,
+  setIncludePostText,
   ctaText,
   setCtaText,
   postText,
@@ -34,11 +36,11 @@ const ContextForm = ({
     boxSizing: 'border-box'
   };
 
-  const getContextFieldStyle = () => ({
+  const getContextFieldStyle = (isEnabled) => ({
     ...sharedInputStyle,
-    backgroundColor: isContextModeOn ? '#ffffff' : '#f3f4f6',
-    color: isContextModeOn ? '#1f2937' : '#9ca3af',
-    cursor: isContextModeOn ? 'text' : 'not-allowed'
+    backgroundColor: isEnabled ? '#ffffff' : '#f3f4f6',
+    color: '#1f2937',
+    cursor: isEnabled ? 'text' : 'not-allowed'
   });
 
   const getToggleButtonStyle = (active) => ({
@@ -54,6 +56,35 @@ const ContextForm = ({
     transition: 'all 0.2s ease'
   });
 
+  const formGridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(260px, 1fr))',
+    gap: '24px',
+    marginBottom: '24px'
+  };
+
+  const contextCardStyle = {
+    borderRadius: '20px',
+    padding: '24px',
+    backgroundColor: '#f9fafb',
+    display: 'flex',
+    flexDirection: 'column',
+    gap: '20px'
+  };
+
+  const contextToggleGroupStyle = {
+    display: 'inline-flex',
+    backgroundColor: '#e5e7eb',
+    borderRadius: '9999px',
+    padding: '4px'
+  };
+
+  const contextFieldsGridStyle = {
+    display: 'grid',
+    gridTemplateColumns: 'repeat(auto-fit, minmax(220px, 1fr))',
+    gap: '20px'
+  };
+
   return (
     <div style={{ ...sectionStyle, marginBottom: '32px' }}>
       <div style={{ marginBottom: '24px' }}>
@@ -65,20 +96,8 @@ const ContextForm = ({
         </p>
       </div>
 
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '24px',
-          marginBottom: '24px'
-        }}
-      >
-        <div
-          style={{
-            flex: '1 1 320px',
-            minWidth: '260px'
-          }}
-        >
+      <div style={formGridStyle}>
+        <div>
           <label
             htmlFor="ad-objective"
             style={sharedLabelStyle}
@@ -99,112 +118,7 @@ const ContextForm = ({
           </select>
         </div>
 
-        <div
-          style={{
-            flex: '1 1 320px',
-            minWidth: '260px'
-          }}
-        >
-          <span style={sharedLabelStyle}>Kontextläge</span>
-          <div
-            style={{
-              display: 'flex',
-              backgroundColor: '#f3f4f6',
-              borderRadius: '9999px',
-              padding: '4px',
-              width: 'fit-content'
-            }}
-          >
-            <button
-              type="button"
-              onClick={() => setIsContextModeOn(false)}
-              style={getToggleButtonStyle(!isContextModeOn)}
-            >
-              Av
-            </button>
-            <button
-              type="button"
-              onClick={() => setIsContextModeOn(true)}
-              style={getToggleButtonStyle(isContextModeOn)}
-            >
-              På
-            </button>
-          </div>
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '24px',
-          marginBottom: '24px'
-        }}
-      >
-        <div
-          style={{
-            flex: '1 1 320px',
-            minWidth: '260px'
-          }}
-        >
-          <label
-            htmlFor="cta-text"
-            style={sharedLabelStyle}
-          >
-            CTA
-          </label>
-          <input
-            type="text"
-            id="cta-text"
-            value={ctaText}
-            onChange={(e) => setCtaText(e.target.value)}
-            placeholder="t.ex. Boka demo, Läs mer"
-            disabled={!isContextModeOn}
-            style={getContextFieldStyle()}
-          />
-        </div>
-
-        <div
-          style={{
-            flex: '1 1 320px',
-            minWidth: '260px'
-          }}
-        >
-          <label
-            htmlFor="post-text"
-            style={sharedLabelStyle}
-          >
-            Inläggstext
-          </label>
-          <textarea
-            id="post-text"
-            value={postText}
-            onChange={(e) => setPostText(e.target.value)}
-            placeholder="Skriv inläggstexten här"
-            disabled={!isContextModeOn}
-            rows={4}
-            style={{
-              ...getContextFieldStyle(),
-              resize: 'vertical',
-              minHeight: '120px'
-            }}
-          />
-        </div>
-      </div>
-
-      <div
-        style={{
-          display: 'flex',
-          flexWrap: 'wrap',
-          gap: '24px'
-        }}
-      >
-        <div
-          style={{
-            flex: '1 1 320px',
-            minWidth: '260px'
-          }}
-        >
+        <div>
           <label
             htmlFor="platform-select"
             style={sharedLabelStyle}
@@ -224,12 +138,7 @@ const ContextForm = ({
           </select>
         </div>
 
-        <div
-          style={{
-            flex: '1 1 320px',
-            minWidth: '260px'
-          }}
-        >
+        <div>
           <label
             htmlFor="target-audience"
             style={sharedLabelStyle}
@@ -244,6 +153,123 @@ const ContextForm = ({
             placeholder="t.ex. Kvinnor 25-35, intresserade av fitness"
             style={sharedInputStyle}
           />
+        </div>
+      </div>
+
+      <div style={contextCardStyle}>
+        <div
+          style={{
+            display: 'flex',
+            flexWrap: 'wrap',
+            alignItems: 'center',
+            justifyContent: 'space-between',
+            gap: '16px'
+          }}
+        >
+          <div>
+            <span style={sharedLabelStyle}>Kontextläge</span>
+            <p style={{
+              fontSize: '14px',
+              color: '#6b7280',
+              margin: 0
+            }}>
+              Aktivera för att beskriva CTA och inläggstext från plattformen
+            </p>
+          </div>
+
+          <div style={contextToggleGroupStyle}>
+            <button
+              type="button"
+              onClick={() => setIsContextModeOn(false)}
+              style={getToggleButtonStyle(!isContextModeOn)}
+            >
+              Av
+            </button>
+            <button
+              type="button"
+              onClick={() => {
+                if (!isContextModeOn) {
+                  setIncludePostText(true);
+                }
+                setIsContextModeOn(true);
+              }}
+              style={getToggleButtonStyle(isContextModeOn)}
+            >
+              På
+            </button>
+          </div>
+        </div>
+
+        <div style={contextFieldsGridStyle}>
+          <div>
+            <label
+              htmlFor="cta-text"
+              style={{
+                ...sharedLabelStyle,
+                marginBottom: '12px'
+              }}
+            >
+              CTA
+            </label>
+            <input
+              type="text"
+              id="cta-text"
+              value={ctaText}
+              onChange={(e) => setCtaText(e.target.value)}
+              placeholder="t.ex. Boka demo, Läs mer"
+              disabled={!isContextModeOn}
+              style={getContextFieldStyle(isContextModeOn)}
+            />
+          </div>
+
+          <div style={{ gridColumn: '1 / -1' }}>
+            <div
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                justifyContent: isContextModeOn ? 'space-between' : 'flex-start',
+                marginBottom: '12px'
+              }}
+            >
+              <label
+                htmlFor="post-text"
+                style={{
+                  ...sharedLabelStyle,
+                  marginBottom: 0
+                }}
+              >
+                Inläggstext
+              </label>
+              {isContextModeOn && (
+                <input
+                  type="checkbox"
+                  id="post-text-enabled"
+                  checked={includePostText}
+                  onChange={(event) => setIncludePostText(event.target.checked)}
+                  aria-label="Inkludera inläggstext"
+                  style={{
+                    width: '20px',
+                    height: '20px',
+                    accentColor: '#89C235',
+                    cursor: 'pointer'
+                  }}
+                />
+              )}
+            </div>
+            <textarea
+              id="post-text"
+              value={postText}
+              onChange={(e) => setPostText(e.target.value)}
+              placeholder="Skriv inläggstexten här"
+              disabled={!isContextModeOn || !includePostText}
+              rows={4}
+              style={{
+                ...getContextFieldStyle(isContextModeOn && includePostText),
+                resize: 'vertical',
+                minHeight: '120px'
+              }}
+            />
+          </div>
         </div>
       </div>
     </div>

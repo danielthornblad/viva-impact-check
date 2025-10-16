@@ -56,6 +56,7 @@ const AdAnalyzerUI = ({ header = null }) => {
   const [targetAudience, setTargetAudience] = useState('');
   const [adObjective, setAdObjective] = useState('');
   const [isContextModeOn, setIsContextModeOn] = useState(false);
+  const [includePostText, setIncludePostText] = useState(true);
   const [ctaText, setCtaText] = useState('');
   const [postText, setPostText] = useState('');
   const [dragActive, setDragActive] = useState(false);
@@ -151,8 +152,11 @@ const AdAnalyzerUI = ({ header = null }) => {
       formData.append('targetAudience', targetAudience);
       formData.append('isContextModeOn', isContextModeOn ? 'true' : 'false');
       if (isContextModeOn) {
+        formData.append('includePostText', includePostText ? 'true' : 'false');
         formData.append('ctaText', ctaText);
-        formData.append('postText', postText);
+        if (includePostText) {
+          formData.append('postText', postText);
+        }
       }
       formData.append('fileName', uploadedFile.name);
       formData.append('fileSize', uploadedFile.size);
@@ -167,8 +171,9 @@ const AdAnalyzerUI = ({ header = null }) => {
           adObjective,
           targetAudience,
           isContextModeOn,
+          includePostText: isContextModeOn ? includePostText : undefined,
           ctaText: isContextModeOn ? ctaText : undefined,
-          postText: isContextModeOn ? postText : undefined
+          postText: isContextModeOn && includePostText ? postText : undefined
         });
       }
 
@@ -244,6 +249,8 @@ const AdAnalyzerUI = ({ header = null }) => {
                 setAdObjective={setAdObjective}
                 isContextModeOn={isContextModeOn}
                 setIsContextModeOn={setIsContextModeOn}
+                includePostText={includePostText}
+                setIncludePostText={setIncludePostText}
                 ctaText={ctaText}
                 setCtaText={setCtaText}
                 postText={postText}
