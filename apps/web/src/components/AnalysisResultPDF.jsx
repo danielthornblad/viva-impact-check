@@ -1,107 +1,175 @@
 import React from 'react';
-import { Document, Page, StyleSheet, Text, View } from '@react-pdf/renderer';
+import { Document, Page, Text, View, StyleSheet } from '@react-pdf/renderer';
 
+// Professionella stilar med Viva-färger
 const styles = StyleSheet.create({
   page: {
-    padding: 32,
+    padding: 40,
     fontFamily: 'Helvetica',
     fontSize: 11,
+    lineHeight: 1.5,
     color: '#071119',
-    lineHeight: 1.4,
   },
   title: {
-    fontSize: 22,
+    fontSize: 24,
     fontWeight: 'bold',
-    marginBottom: 16,
+    marginBottom: 20,
+    color: '#071119',
   },
-  messageBox: {
-    padding: 12,
-    backgroundColor: '#E6F7F4',
-    borderRadius: 6,
-    marginBottom: 16,
+  metadataBox: {
+    backgroundColor: '#f8fdf4',
+    padding: 16,
+    marginBottom: 20,
+    borderRadius: 8,
+    border: '1 solid #CAE780',
   },
-  messageText: {
-    fontSize: 11,
-  },
-  section: {
-    marginBottom: 18,
-  },
-  sectionTitle: {
+  metadataTitle: {
     fontSize: 14,
     fontWeight: 'bold',
-    marginBottom: 8,
+    marginBottom: 12,
+    color: '#02443E',
+  },
+  checkmark: {
+    width: 16,
+    height: 16,
+    borderRadius: 8,
+    backgroundColor: '#CAE780',
+    color: '#071119',
+    textAlign: 'center',
+    fontSize: 10,
+    fontWeight: 'bold',
+    marginRight: 6,
   },
   metadataRow: {
     flexDirection: 'row',
-    justifyContent: 'space-between',
     marginBottom: 6,
   },
   metadataLabel: {
+    width: 120,
     fontWeight: 'bold',
+    color: '#071119',
   },
-  badgeRow: {
-    flexDirection: 'row',
-    marginBottom: 12,
+  metadataValue: {
+    flex: 1,
+    color: '#02443E',
   },
   badge: {
+    backgroundColor: '#CAE780',
+    padding: 8,
+    marginBottom: 20,
+    alignSelf: 'flex-start',
+    borderRadius: 12,
     fontSize: 10,
     fontWeight: 'bold',
     color: '#02443E',
-    border: '1px solid #02443E',
-    borderRadius: 4,
-    paddingVertical: 4,
-    paddingHorizontal: 8,
+  },
+  sectionTitle: {
+    fontSize: 16,
+    fontWeight: 'bold',
+    marginTop: 20,
+    marginBottom: 12,
+    color: '#071119',
   },
   subsectionTitle: {
-    fontSize: 12,
+    fontSize: 13,
     fontWeight: 'bold',
-    marginBottom: 6,
+    marginTop: 16,
+    marginBottom: 8,
+    color: '#02443E',
   },
-  card: {
-    marginBottom: 12,
-    paddingBottom: 6,
-    borderBottom: '1px solid #D6D6D7',
-  },
-  bulletRow: {
-    flexDirection: 'row',
-    alignItems: 'flex-start',
+  categoryLabel: {
+    fontSize: 10,
+    fontWeight: 'bold',
+    color: '#02443E',
+    textTransform: 'uppercase',
+    letterSpacing: 0.5,
+    marginTop: 8,
     marginBottom: 4,
   },
-  bulletSymbol: {
-    marginRight: 6,
+  bulletPoint: {
+    flexDirection: 'row',
+    marginBottom: 6,
+    paddingLeft: 10,
+  },
+  bullet: {
+    width: 6,
+    height: 6,
+    borderRadius: 3,
+    marginRight: 8,
+    marginTop: 4,
+  },
+  bulletGreen: {
+    backgroundColor: '#CAE780',
+  },
+  bulletDark: {
+    backgroundColor: '#071119',
+    opacity: 0.4,
   },
   bulletText: {
     flex: 1,
-    fontSize: 10,
+    color: '#02443E',
   },
-  numberedRow: {
+  sectionCard: {
+    marginBottom: 16,
+  },
+  improvementBox: {
+    backgroundColor: '#f8fdf4',
+    padding: 16,
+    marginTop: 16,
+    marginBottom: 8,
+    borderRadius: 8,
+    border: '1 solid #CAE780',
+  },
+  improvementItem: {
     flexDirection: 'row',
-    alignItems: 'flex-start',
-    marginBottom: 6,
+    marginBottom: 12,
   },
-  numberCircle: {
+  improvementNumber: {
+    width: 24,
+    height: 24,
+    borderRadius: 12,
+    backgroundColor: '#CAE780',
+    color: '#071119',
+    textAlign: 'center',
+    lineHeight: 1.8,
     fontWeight: 'bold',
-    marginRight: 8,
-  },
-  paragraph: {
+    marginRight: 10,
     fontSize: 11,
   },
-  fallbackBox: {
-    padding: 12,
-    backgroundColor: '#FFF3CD',
-    borderRadius: 6,
+  recommendationBox: {
+    backgroundColor: '#f8fdf4',
+    padding: 16,
+    marginTop: 16,
+    borderRadius: 8,
+    border: '2 solid #CAE780',
   },
-  codeBlock: {
-    marginTop: 8,
-    padding: 8,
-    backgroundColor: '#F4F4F5',
-    borderRadius: 4,
-    fontSize: 9,
+  summaryText: {
+    color: '#02443E',
+    lineHeight: 1.6,
+  },
+  fallbackBox: {
+    backgroundColor: '#fef2f2',
+    padding: 16,
+    marginTop: 16,
+    borderRadius: 8,
+    border: '1 solid #fca5a5',
+  },
+  fallbackTitle: {
+    fontSize: 14,
+    fontWeight: 'bold',
+    color: '#991b1b',
+    marginBottom: 8,
+  },
+  fallbackText: {
+    color: '#b91c1c',
+    fontSize: 10,
   },
   waitingBox: {
-    padding: 12,
-    backgroundColor: '#F0F4FF',
-    borderRadius: 6,
+    backgroundColor: '#f8fdf4',
+    padding: 16,
+    marginTop: 16,
+    borderRadius: 8,
+    border: '1 solid #CAE780',
   },
 });
 
@@ -116,108 +184,113 @@ const formatTimestamp = (timestamp) => {
   if (!timestamp) {
     return new Date().toLocaleString('sv-SE');
   }
-
   const parsed = Number(timestamp);
   if (!Number.isNaN(parsed)) {
     return new Date(parsed).toLocaleString('sv-SE');
   }
-
   const date = new Date(timestamp);
   return Number.isNaN(date.getTime()) ? new Date().toLocaleString('sv-SE') : date.toLocaleString('sv-SE');
 };
 
-const BulletList = ({ items }) => (
-  <View>
-    {items.map((item, index) => (
-      <View key={`${item}-${index}`} style={styles.bulletRow}>
-        <Text style={styles.bulletSymbol}>•</Text>
-        <Text style={styles.bulletText}>{item}</Text>
-      </View>
-    ))}
-  </View>
-);
-
 const AnalysisResultPDF = ({ analysisResult }) => {
   const result = analysisResult?.analysisResult;
-  const data = analysisResult?.data ?? {};
-  const fileName = analysisResult?.fileName ?? data.fileName ?? 'Okänt filnamn';
-  const adType = data.adType ?? result?.type;
-  const adTypeLabel = adType === 'video' ? 'Videoannons' : 'Bildannons';
+  const data = analysisResult?.data || {};
+  const fileName = analysisResult?.fileName || data.fileName || 'Okänt filnamn';
+  const adType = data.adType || result?.type;
 
   return (
     <Document>
       <Page size="A4" style={styles.page}>
         <Text style={styles.title}>Viva Impact Check</Text>
 
-        {analysisResult?.message && (
-          <View style={styles.messageBox}>
-            <Text style={styles.messageText}>{analysisResult.message}</Text>
+        {/* Metadata */}
+        <View style={styles.metadataBox}>
+          <View style={{ flexDirection: 'row', alignItems: 'center', marginBottom: 12 }}>
+            <View style={styles.checkmark}>
+              <Text>✓</Text>
+            </View>
+            <Text style={styles.metadataTitle}>{analysisResult?.message || 'Analysresultat'}</Text>
           </View>
-        )}
-
-        <View style={styles.section}>
-          <Text style={styles.sectionTitle}>Metadata</Text>
+          
           <View style={styles.metadataRow}>
             <Text style={styles.metadataLabel}>Filnamn:</Text>
-            <Text>{fileName}</Text>
+            <Text style={styles.metadataValue}>{fileName}</Text>
           </View>
           <View style={styles.metadataRow}>
             <Text style={styles.metadataLabel}>Filstorlek:</Text>
-            <Text>{formatFileSize(data.fileSize)}</Text>
+            <Text style={styles.metadataValue}>{formatFileSize(data.fileSize)}</Text>
           </View>
           <View style={styles.metadataRow}>
             <Text style={styles.metadataLabel}>Annonstyp:</Text>
-            <Text>{adTypeLabel}</Text>
+            <Text style={styles.metadataValue}>
+              {adType === 'video' ? 'Videoannons' : 'Bildannons'}
+            </Text>
           </View>
           <View style={styles.metadataRow}>
-            <Text style={styles.metadataLabel}>Plattform:</Text>
-            <Text>{data.platform ?? analysisResult?.platform ?? 'N/A'}</Text>
+            <Text style={styles.metadataLabel}>Platform:</Text>
+            <Text style={styles.metadataValue}>{data.platform || analysisResult?.platform || 'N/A'}</Text>
           </View>
           <View style={styles.metadataRow}>
             <Text style={styles.metadataLabel}>Målgrupp:</Text>
-            <Text>{data.targetAudience ?? analysisResult?.targetAudience ?? 'N/A'}</Text>
+            <Text style={styles.metadataValue}>{data.targetAudience || analysisResult?.targetAudience || 'N/A'}</Text>
           </View>
           <View style={styles.metadataRow}>
             <Text style={styles.metadataLabel}>AI-modell:</Text>
-            <Text>{data.aiProvider ?? analysisResult?.aiProvider ?? 'N/A'}</Text>
+            <Text style={styles.metadataValue}>{data.aiProvider || analysisResult?.aiProvider || 'N/A'}</Text>
           </View>
           <View style={styles.metadataRow}>
             <Text style={styles.metadataLabel}>Tidsstämpel:</Text>
-            <Text>{formatTimestamp(data.timestamp)}</Text>
+            <Text style={styles.metadataValue}>{formatTimestamp(data.timestamp)}</Text>
           </View>
         </View>
 
         {result?.parsed && (
           <View>
-            <View style={styles.badgeRow}>
-              <Text style={styles.badge}>{result.type === 'video' ? 'Videoanalys' : 'Bildanalys'}</Text>
-            </View>
+            <Text style={styles.badge}>
+              {result.type === 'video' ? 'Videoanalys' : 'Bildanalys'}
+            </Text>
 
+            {/* Sektioner med styrkor/svagheter */}
             {result.sections && Object.keys(result.sections).length > 0 && (
-              <View style={styles.section}>
+              <View>
                 <Text style={styles.sectionTitle}>Resultat</Text>
                 {Object.entries(result.sections).map(([sectionName, items]) => (
-                  <View key={sectionName} style={styles.card}>
+                  <View key={sectionName} style={styles.sectionCard}>
                     <Text style={styles.subsectionTitle}>{sectionName}</Text>
-
+                    
                     {items.strengths && items.strengths.length > 0 && (
-                      <View style={{ marginBottom: 6 }}>
-                        <Text style={styles.paragraph}>Styrkor</Text>
-                        <BulletList items={items.strengths} />
+                      <View>
+                        <Text style={styles.categoryLabel}>Styrkor</Text>
+                        {items.strengths.map((item, idx) => (
+                          <View key={idx} style={styles.bulletPoint}>
+                            <View style={[styles.bullet, styles.bulletGreen]} />
+                            <Text style={styles.bulletText}>{item}</Text>
+                          </View>
+                        ))}
                       </View>
                     )}
-
+                    
                     {items.weaknesses && items.weaknesses.length > 0 && (
-                      <View style={{ marginBottom: 6 }}>
-                        <Text style={styles.paragraph}>Förbättringsområden</Text>
-                        <BulletList items={items.weaknesses} />
+                      <View>
+                        <Text style={styles.categoryLabel}>Förbättringsområden</Text>
+                        {items.weaknesses.map((item, idx) => (
+                          <View key={idx} style={styles.bulletPoint}>
+                            <View style={[styles.bullet, styles.bulletDark]} />
+                            <Text style={styles.bulletText}>{item}</Text>
+                          </View>
+                        ))}
                       </View>
                     )}
 
                     {items.uncertainties && items.uncertainties.length > 0 && (
                       <View>
-                        <Text style={styles.paragraph}>Osäkerheter</Text>
-                        <BulletList items={items.uncertainties} />
+                        <Text style={styles.categoryLabel}>Osäkerheter</Text>
+                        {items.uncertainties.map((item, idx) => (
+                          <View key={idx} style={styles.bulletPoint}>
+                            <View style={[styles.bullet, styles.bulletGreen]} />
+                            <Text style={styles.bulletText}>{item}</Text>
+                          </View>
+                        ))}
                       </View>
                     )}
                   </View>
@@ -225,70 +298,87 @@ const AnalysisResultPDF = ({ analysisResult }) => {
               </View>
             )}
 
-            {result.type === 'video' && (
-              <View style={styles.section}>
-                {result.overallStrengths && result.overallStrengths.length > 0 && (
-                  <View style={{ marginBottom: 10 }}>
-                    <Text style={styles.subsectionTitle}>Övergripande styrkor</Text>
-                    <BulletList items={result.overallStrengths} />
-                  </View>
-                )}
-
-                {result.overallWeaknesses && result.overallWeaknesses.length > 0 && (
-                  <View>
-                    <Text style={styles.subsectionTitle}>Förbättringsområden</Text>
-                    <BulletList items={result.overallWeaknesses} />
-                  </View>
-                )}
-              </View>
-            )}
-
-            {result.type === 'image' && result.summary && (
-              <View style={styles.section}>
-                <Text style={styles.subsectionTitle}>Sammanfattning</Text>
-                <Text style={styles.paragraph}>{result.summary}</Text>
-              </View>
-            )}
-
-            {result.improvements && result.improvements.length > 0 && (
-              <View style={styles.section}>
-                <Text style={styles.sectionTitle}>Konkreta förbättringsförslag</Text>
-                {result.improvements.map((item, index) => (
-                  <View key={`${item}-${index}`} style={styles.numberedRow}>
-                    <Text style={styles.numberCircle}>{index + 1}.</Text>
+            {/* Övergripande styrkor (video) */}
+            {result.type === 'video' && result.overallStrengths && result.overallStrengths.length > 0 && (
+              <View>
+                <Text style={styles.sectionTitle}>Övergripande styrkor</Text>
+                {result.overallStrengths.map((item, idx) => (
+                  <View key={idx} style={styles.bulletPoint}>
+                    <View style={[styles.bullet, styles.bulletGreen]} />
                     <Text style={styles.bulletText}>{item}</Text>
                   </View>
                 ))}
               </View>
             )}
 
+            {/* Förbättringsområden (video) */}
+            {result.type === 'video' && result.overallWeaknesses && result.overallWeaknesses.length > 0 && (
+              <View>
+                <Text style={styles.sectionTitle}>Förbättringsområden</Text>
+                {result.overallWeaknesses.map((item, idx) => (
+                  <View key={idx} style={styles.bulletPoint}>
+                    <View style={[styles.bullet, styles.bulletDark]} />
+                    <Text style={styles.bulletText}>{item}</Text>
+                  </View>
+                ))}
+              </View>
+            )}
+
+            {/* Sammanfattning (bild) */}
+            {result.type === 'image' && result.summary && (
+              <View style={styles.improvementBox}>
+                <Text style={styles.subsectionTitle}>Sammanfattning</Text>
+                <Text style={styles.summaryText}>{result.summary}</Text>
+              </View>
+            )}
+
+            {/* Förbättringsförslag */}
+            {result.improvements && result.improvements.length > 0 && (
+              <View>
+                <Text style={styles.sectionTitle}>Konkreta förbättringsförslag</Text>
+                <View style={styles.improvementBox}>
+                  {result.improvements.map((item, idx) => (
+                    <View key={idx} style={styles.improvementItem}>
+                      <Text style={styles.improvementNumber}>{idx + 1}</Text>
+                      <Text style={[styles.bulletText, { flex: 1 }]}>{item}</Text>
+                    </View>
+                  ))}
+                </View>
+              </View>
+            )}
+
+            {/* Motivering (bild) */}
             {result.type === 'image' && result.motivation && (
-              <View style={styles.section}>
+              <View style={styles.improvementBox}>
                 <Text style={styles.subsectionTitle}>Motivering</Text>
-                <Text style={styles.paragraph}>{result.motivation}</Text>
+                <Text style={styles.summaryText}>{result.motivation}</Text>
               </View>
             )}
 
+            {/* Rekommendation (video) */}
             {result.type === 'video' && result.recommendation && (
-              <View style={styles.section}>
+              <View style={styles.recommendationBox}>
                 <Text style={styles.subsectionTitle}>Samlad rekommendation</Text>
-                <Text style={styles.paragraph}>{result.recommendation}</Text>
+                <Text style={styles.summaryText}>{result.recommendation}</Text>
               </View>
             )}
           </View>
         )}
 
+        {/* Om parsning misslyckades */}
         {result && !result.parsed && (
-          <View style={[styles.section, styles.fallbackBox]}>
-            <Text style={styles.sectionTitle}>⚠️ Fel vid parsning av analys</Text>
-            {result.error && <Text style={styles.paragraph}>{result.error}</Text>}
-            {result.rawContent && <Text style={styles.codeBlock}>{`${result.rawContent}`}</Text>}
+          <View style={styles.fallbackBox}>
+            <Text style={styles.fallbackTitle}>⚠️ Fel vid parsning av analys</Text>
+            {result.error && (
+              <Text style={styles.fallbackText}>{result.error}</Text>
+            )}
           </View>
         )}
 
+        {/* Väntar på resultat */}
         {!result && (
-          <View style={[styles.section, styles.waitingBox]}>
-            <Text style={styles.paragraph}>Väntar på AI-analys från n8n workflow...</Text>
+          <View style={styles.waitingBox}>
+            <Text style={styles.summaryText}>Väntar på AI-analys från n8n workflow...</Text>
           </View>
         )}
       </Page>
