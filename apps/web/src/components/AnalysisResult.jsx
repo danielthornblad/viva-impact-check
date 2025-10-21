@@ -1,7 +1,9 @@
 import React from 'react';
+import { pdf } from '@react-pdf/renderer';
 import MetadataSection from './MetadataSection';
 import StrengthsWeaknessesSection from './StrengthsWeaknessesSection';
 import ImprovementsSection from './ImprovementsSection';
+import AnalysisResultPDF from './AnalysisResultPDF';
 import {
   analysisContainer,
   analysisTitle,
@@ -40,9 +42,71 @@ import {
 const AnalysisResult = ({ analysisResult }) => {
   if (!analysisResult) return null;
 
+  const handleDownloadPDF = async () => {
+    try {
+      const blob = await pdf(<AnalysisResultPDF analysisResult={analysisResult} />).toBlob();
+      const url = URL.createObjectURL(blob);
+      const link = document.createElement('a');
+      link.href = url;
+      const fileName = analysisResult?.fileName || analysisResult?.data?.fileName || 'annons';
+      const timestamp = new Date().toISOString().split('T')[0];
+      link.download = `viva-impact-${fileName.replace(/\.[^/.]+$/, '')}-${timestamp}.pdf`;
+      document.body.appendChild(link);
+      link.click();
+      document.body.removeChild(link);
+      URL.revokeObjectURL(url);
+    } catch (error) {
+      // eslint-disable-next-line no-console
+      console.error('Fel vid skapande av PDF:', error);
+      // eslint-disable-next-line no-alert
+      alert('Kunde inte skapa PDF. Försök igen.');
+    }
+  };
+
   return (
     <div style={analysisContainer}>
       <h2 style={analysisTitle}>Viva Impact Check</h2>
+
+      <button
+        onClick={handleDownloadPDF}
+        style={{
+          padding: '12px 24px',
+          backgroundColor: '#CAE780',
+          color: '#071119',
+          border: 'none',
+          borderRadius: '50px',
+          fontSize: '15px',
+          fontWeight: '600',
+          cursor: 'pointer',
+          marginBottom: '24px',
+          display: 'flex',
+          alignItems: 'center',
+          gap: '8px',
+          transition: 'all 0.2s',
+        }}
+        onMouseEnter={(e) => {
+          e.currentTarget.style.backgroundColor = '#b8d470';
+          e.currentTarget.style.transform = 'translateY(-2px)';
+        }}
+        onMouseLeave={(e) => {
+          e.currentTarget.style.backgroundColor = '#CAE780';
+          e.currentTarget.style.transform = 'translateY(0)';
+        }}
+      >
+        <svg
+          width="18"
+          height="18"
+          viewBox="0 0 24 24"
+          fill="none"
+          stroke="currentColor"
+          strokeWidth="2"
+        >
+          <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"></path>
+          <polyline points="7 10 12 15 17 10"></polyline>
+          <line x1="12" y1="15" x2="12" y2="3"></line>
+        </svg>
+        Ladda ner PDF
+      </button>
 
       <MetadataSection analysisResult={analysisResult} />
 
