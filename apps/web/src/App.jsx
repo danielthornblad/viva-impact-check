@@ -189,7 +189,10 @@ const AdAnalyzerUI = ({ header = null }) => {
     'LinkedIn',
     'TikTok',
     'Twitter/X',
-    'Snapchat'
+    'Snapchat',
+    'Print - Magasin',
+    'Print - Dagstidning',
+    'Print - Trycksak'
   ];
 
   const canAnalyze = uploadedFile && platform && targetAudience;
